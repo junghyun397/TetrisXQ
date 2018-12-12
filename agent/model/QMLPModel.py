@@ -3,8 +3,10 @@ import math
 import tensorflow as tf
 import numpy as np
 
+from agent.DeepQNetworkModel import DeepQNetworkModel
 
-class TetrisXQModel:
+
+class QMLPModel(DeepQNetworkModel):
 
     def __init__(self, settings):
         self._build_model(settings)
@@ -58,16 +60,16 @@ class TetrisXQModel:
         _, loss = sess.run([self.optimizer, self.cost], feed_dict={self.X: x, self.Y: y})
         return loss
 
-    def get_target_q_value(self, sess, current_state, next_state, action, reward):
-        target_q_values = self.get_q_value(sess, current_state)
+    def get_target_q_value(self, sess, input_state, next_state, action, reward):
+        target_q_values = self.get_q_value(sess, input_state)
         next_q_values = self.get_q_value(sess, next_state)
         next_max_q = np.amax(next_q_values)
 
-        target_q_values[0, [action]] = self.get_reformation_y(reward, next_max_q)
+        target_q_values[0, [action]] = self.get_target_y(reward, next_max_q)
 
-        return current_state, target_q_values
+        return input_state, target_q_values
 
-    def get_reformation_y(self, reward, max_q):
+    def get_target_y(self, reward, max_q):
         return reward + max_q * self._discount
 
     def get_q_value(self, sess, x):

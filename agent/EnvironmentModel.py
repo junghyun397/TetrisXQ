@@ -1,7 +1,7 @@
 from abc import ABCMeta
 
 
-class EnvironmentInterface(metaclass=ABCMeta):
+class EnvironmentModel(metaclass=ABCMeta):
 
     def action_and_reward(self, action):
         """
@@ -13,7 +13,7 @@ class EnvironmentInterface(metaclass=ABCMeta):
         """
         pass
 
-    def get_environment(self):
+    def get_state(self):
         """
         현재 환경을 반환함
         :return: state: np.ndarray, 환경 반환

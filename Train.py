@@ -3,9 +3,9 @@ import random
 
 import tensorflow as tf
 
-from agent.TetrisXQModel import TetrisXQModel
+from agent.model.QMLPModel import QMLPModel
 from agent.data.BatchManager import BatchManager
-from training_ai.TetrisAI import TetrisAI
+from tetris.ai.TetrisAI import TetrisAI
 
 settings = dict()
 settings['randSeed'] = 503
@@ -32,14 +32,14 @@ def main(_):
         sess.run(tf.global_variables_initializer())
         writer = tf.summary.FileWriter('./board/train_log', sess.graph)
 
-        tetrisXQ_model = TetrisXQModel(settings)
+        tetrisXQ_model = QMLPModel(settings)
         batch_model = BatchManager(settings)
         env_model = TetrisAI()
 
         for index in range(settings['epoch']):
             error = 0
             current_end = False
-            current_state = env_model.get_environment()
+            current_state = env_model.get_state()
 
             max_q = 0
             turn_count = 0
@@ -64,8 +64,8 @@ def main(_):
                 current_state = next_state
                 current_end = next_end
 
-                current_q_values, target_q_values = batch_model.get_batch(sess, tetrisXQ_model.get_target_q_value)
-                loss = tetrisXQ_model.optimize_one_step(sess, current_q_values, target_q_values)
+                input_state, target_q_values = batch_model.get_batch(sess, tetrisXQ_model.get_target_q_value)
+                loss = tetrisXQ_model.optimize_one_step(sess, input_state, target_q_values)
                 error = error + loss
 
                 writer.add_summary(loss)

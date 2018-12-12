@@ -8,6 +8,10 @@ from agent.data.BatchManager import BatchManager
 from tetris.ai.TetrisAI import TetrisAI
 
 settings = dict()
+
+settings['gridWidth'] = 10
+settings['gridHeight'] = 22
+
 settings['randSeed'] = 503
 settings['epoch'] = 2000
 

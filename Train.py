@@ -36,14 +36,14 @@ def main(_):
         sess.run(tf.global_variables_initializer())
         writer = tf.summary.FileWriter('./board/train_log', sess.graph)
 
-        tetrisXQ_model = QMLPModel(settings)
+        q_network_model = QMLPModel(settings)
         batch_model = BatchManager(settings)
-        env_model = TetrisAI()
+        env_model = TetrisAI(settings)
 
         for index in range(settings['epoch']):
             error = 0
             current_end = False
-            current_state = env_model.get_state()
+            current_state = env_model.get_vector_state()
 
             max_q = 0
             turn_count = 0
@@ -53,7 +53,7 @@ def main(_):
                 if (float(random.randrange(0, 9999)) / 10000) <= rand_rate:
                     action = random.randrange(0, settings['nbActions'])
                 else:
-                    q_values = tetrisXQ_model.get_q_value(sess, current_state)
+                    q_values = q_network_model.get_forward(sess, current_state)
                     action = q_values.argmax()
 
                     if q_values[action] > max_q:
@@ -68,8 +68,8 @@ def main(_):
                 current_state = next_state
                 current_end = next_end
 
-                input_state, target_q_values = batch_model.get_batch(sess, tetrisXQ_model.get_target_q_value)
-                loss = tetrisXQ_model.optimize_one_step(sess, input_state, target_q_values)
+                input_state, target_values = batch_model.get_batch(sess, q_network_model.get_target_value)
+                loss = q_network_model.optimize_step(sess, input_state, target_values)
                 error = error + loss
 
                 writer.add_summary(loss)

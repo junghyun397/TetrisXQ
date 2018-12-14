@@ -17,7 +17,7 @@ class BatchManager:
         self.actions = np.zeros(self._maxMemory, dtype=np.uint8)
         self.rewards = np.empty(self._maxMemory, dtype=np.int8)
 
-        self.length = 0
+        self.length = 1
         self.index = 0
 
     def add_data(self, current_state, next_state, action, reward):

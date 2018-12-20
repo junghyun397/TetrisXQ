@@ -52,7 +52,7 @@ class QMLPModel(DeepQNetworkModel):
         # 평균 제곱 오차
         self.cost = tf.reduce_sum(tf.square(self.Y - self.output_layer)) / (2 * settings['batchSize'])
         # 경사 하강 최적화
-        self.optimizer = tf.train.GradientDescentOptimizer(settings['learningRate']).minimize(self.cost)
+        self.optimizer = tf.train.AdamOptimizer(settings['learningRate']).minimize(self.cost)
 
     # Model Function
 

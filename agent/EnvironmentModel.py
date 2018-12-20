@@ -1,4 +1,4 @@
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 
 import numpy as np
 
@@ -9,10 +9,11 @@ class EnvironmentModel(metaclass=ABCMeta):
 
     def __init__(self, settings):
         self._nbStates = settings['nbStates']
-        self._tetris_model = TetrisModel(settings)
+        self.tetris_model = TetrisModel(settings)
 
+    @abstractmethod
     def action_and_reward(self, action):
         pass
 
     def get_vector_state(self):
-        return np.reshape(self._tetris_model.get_board(), (1, self._nbStates))
+        return np.reshape(self.tetris_model.get_board(), (1, self._nbStates))

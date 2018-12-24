@@ -7,6 +7,7 @@ from tetris.TetrisModel import TetrisModel
 
 class EnvironmentModel(metaclass=ABCMeta):
 
+    @abstractmethod
     def __init__(self, settings):
         self._states = settings.STATES
         self.tetris_model = TetrisModel(settings)

@@ -3,7 +3,7 @@ import random
 
 import tensorflow as tf
 
-import Settings
+from Settings import Settings
 from agent.model.QMLPModel import QMLPModel
 from agent.data.BatchManager import BatchManager
 from tetris.ai.TetrisAI import TetrisAI
@@ -11,11 +11,11 @@ from tetris.ai.TetrisAI import TetrisAI
 
 def main(_):
 
-    settings = Settings.settings
+    settings = Settings()
 
     rand_rate = 1
 
-    tf.set_random_seed(settings['randSeed'])
+    tf.set_random_seed(settings.RAND_SEED)
 
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
@@ -25,7 +25,7 @@ def main(_):
         batch_model = BatchManager(settings)
         env_model = TetrisAI(settings)
 
-        for index in range(settings['epoch']):
+        for index in range(settings.LEARNING_EPOCH):
             error = 0
             current_end = False
             current_state = env_model.get_vector_state()
@@ -36,7 +36,7 @@ def main(_):
             while not current_end:
                 turn_count += 1
                 if (float(random.randrange(0, 9999)) / 10000) <= rand_rate:
-                    action = random.randrange(0, settings['nbActions'])
+                    action = random.randrange(0, settings.ACTIONS)
                 else:
                     q_values = q_network_model.get_forward(sess, current_state)
                     action = q_values.argmax()

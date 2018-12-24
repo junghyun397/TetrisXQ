@@ -8,7 +8,7 @@ from tetris.TetrisModel import TetrisModel
 class EnvironmentModel(metaclass=ABCMeta):
 
     def __init__(self, settings):
-        self._nbStates = settings['nbStates']
+        self._states = settings.STATES
         self.tetris_model = TetrisModel(settings)
 
     @abstractmethod
@@ -16,4 +16,8 @@ class EnvironmentModel(metaclass=ABCMeta):
         pass
 
     def get_vector_state(self):
-        return np.reshape(self.tetris_model.get_board(), (1, self._nbStates))
+        return np.reshape(self.tetris_model.get_board(), (1, self._states))
+
+    def get_reward(self):
+        append_height = 0
+        return (append_height * 0.1) + (self.tetris_model.current_score * 0.01)

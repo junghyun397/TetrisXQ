@@ -15,44 +15,44 @@ class QMLPModel(DeepQNetworkModel):
     # Model Builder
 
     def _build_model(self, settings):
-        self._nbStates = settings['nbStates']
-        self._nbActions = settings['nbActions']
-        self._hiddenSize = settings['hiddenSize']
+        self._states = settings.STATES
+        self._actions = settings.ACTIONS
+        self._hidden_size = settings.HIDDEN_SIZE
 
-        self._discount = settings['discount']
+        self._discount = settings.DISCOUNT
 
-        self.X = tf.placeholder(tf.float32, [None, self._nbStates])
-        self.Y = tf.placeholder(tf.float32, [None, self._nbActions])
+        self.X = tf.placeholder(tf.float32, [None, self._states])
+        self.Y = tf.placeholder(tf.float32, [None, self._actions])
 
         # 입력 - 은닉1
-        W1 = tf.Variable(tf.truncated_normal([self._nbStates, self._hiddenSize],
-                                             stddev=1.0 / math.sqrt(float(self._nbStates))))
-        b1 = tf.Variable(tf.truncated_normal([self._hiddenSize], stddev=0.01))
+        W1 = tf.Variable(tf.truncated_normal([self._states, self._hidden_size],
+                                             stddev=1.0 / math.sqrt(float(self._states))))
+        b1 = tf.Variable(tf.truncated_normal([self._hidden_size], stddev=0.01))
         hidden_layer_1 = tf.nn.leaky_relu(tf.matmul(self.X, W1) + b1, 0.1, 'N1')
 
         # 은닉1 - 은닉2
-        W2 = tf.Variable(tf.truncated_normal([self._hiddenSize, self._hiddenSize],
-                                             stddev=1.0 / math.sqrt(float(self._hiddenSize))))
-        b2 = tf.Variable(tf.truncated_normal([self._hiddenSize], stddev=0.01))
+        W2 = tf.Variable(tf.truncated_normal([self._hidden_size, self._hidden_size],
+                                             stddev=1.0 / math.sqrt(float(self._hidden_size))))
+        b2 = tf.Variable(tf.truncated_normal([self._hidden_size], stddev=0.01))
         hidden_layer_2 = tf.nn.leaky_relu(tf.matmul(hidden_layer_1, W2) + b2, 0.1, 'N2')
 
         # 은닉2 - 은닉3
-        W3 = tf.Variable(tf.truncated_normal([self._hiddenSize, self._hiddenSize],
-                                             stddev=1.0 / math.sqrt(float(self._hiddenSize))))
-        b3 = tf.Variable(tf.truncated_normal([self._hiddenSize], stddev=0.01))
+        W3 = tf.Variable(tf.truncated_normal([self._hidden_size, self._hidden_size],
+                                             stddev=1.0 / math.sqrt(float(self._hidden_size))))
+        b3 = tf.Variable(tf.truncated_normal([self._hidden_size], stddev=0.01))
         hidden_layer_3 = tf.nn.leaky_relu(tf.matmul(hidden_layer_2, W3) + b3, 0.1, 'N3')
 
         # 은닉3 - 출력
-        W4 = tf.Variable(tf.truncated_normal([self._hiddenSize, self._nbActions],
-                                             stddev=1.0 / math.sqrt(float(self._hiddenSize))))
-        b4 = tf.Variable(tf.truncated_normal([self._nbActions], stddev=0.01))
+        W4 = tf.Variable(tf.truncated_normal([self._hidden_size, self._actions],
+                                             stddev=1.0 / math.sqrt(float(self._hidden_size))))
+        b4 = tf.Variable(tf.truncated_normal([self._actions], stddev=0.01))
         self.output_layer = tf.matmul(hidden_layer_3, W4) + b4
 
     def _build_optimizer(self, settings):
         # 평균 제곱 오차
-        self.cost = tf.reduce_sum(tf.square(self.Y - self.output_layer)) / (2 * settings['batchSize'])
+        self.cost = tf.reduce_sum(tf.square(self.Y - self.output_layer)) / (2 * settings.BATCH_SIZE)
         # 경사 하강 최적화
-        self.optimizer = tf.train.AdamOptimizer(settings['learningRate']).minimize(self.cost)
+        self.optimizer = tf.train.AdamOptimizer(settings.LEARNING_RATE).minimize(self.cost)
 
     # Model Function
 

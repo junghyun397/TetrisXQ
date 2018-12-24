@@ -1,17 +1,19 @@
-settings = dict()
 
-settings['gridWidth'] = 10
-settings['gridHeight'] = 22
+class Settings:
 
-settings['randSeed'] = 503
-settings['epoch'] = 2000
+    def __init__(self):
+        self.GRID_WIDTH = 10
+        self.GRID_HEIGHT = 22
 
-settings['nbActions'] = 7
-settings['nbStates'] = 10 * 22
-settings['hiddenSize'] = 100
+        self.RAND_SEED = 503
+        self.LEARNING_EPOCH = 2000
 
-settings['discount'] = 0.9
-settings['learningRate'] = 0.001
+        self.STATES = self.GRID_WIDTH * self.GRID_HEIGHT
+        self.ACTIONS = 7
+        self.HIDDEN_SIZE = 100
 
-settings['batchSize'] = 50
-settings['maxMemory'] = 100
+        self.DISCOUNT = 0.9
+        self.LEARNING_LATE = 0.001
+
+        self.BATCH_SIZE = 50
+        self.MAX_MEMORY = 100

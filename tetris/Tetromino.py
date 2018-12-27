@@ -18,7 +18,7 @@ class Tetromino(object):
         [[[1, 1, 0], [0, 1, 1]], [[0, 1], [1, 1], [1, 0]]]  # Z, 6
     ]
 
-    _TETROMINO_ROTATE = [1, 0, 0, 3, 3, 1, 1]
+    _TETROMINO_ROTATE = [1, 0, 3, 3, 3, 1, 1]
 
     @staticmethod
     def get_tetromino(code, rotate):

@@ -2,8 +2,8 @@
 class Settings:
 
     def __init__(self):
-        self.GRID_WIDTH = 10
         self.GRID_HEIGHT = 22
+        self.GRID_WIDTH = 10
 
         self.RAND_SEED = 503
         self.LEARNING_EPOCH = 2000

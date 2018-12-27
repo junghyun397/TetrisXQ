@@ -1,7 +1,5 @@
 from abc import ABCMeta, abstractmethod
 
-import numpy as np
-
 from tetris.TetrisModel import TetrisModel
 
 
@@ -16,9 +14,11 @@ class EnvironmentModel(metaclass=ABCMeta):
     def action_and_reward(self, action):
         pass
 
-    def get_vector_state(self):
-        return np.reshape(self.tetris_model.get_board(), (1, self._states))
+    def get_current_state(self):
+        return self.tetris_model.get_board_data()
 
     def get_reward(self):
-        append_height = 0
-        return (append_height * 0.1) + (self.tetris_model.current_score * 0.01)
+        reward = -1 * (self.tetris_model.current_score ** 1.5) * 0.1
+        if self.tetris_model.is_end:
+            reward = 1
+        return reward

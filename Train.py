@@ -28,7 +28,7 @@ def main(_):
         for index in range(settings.LEARNING_EPOCH):
             error = 0
             current_end = False
-            current_state = env_model.get_vector_state()
+            current_state = env_model.get_current_state()
 
             max_q = 0
             turn_count = 0

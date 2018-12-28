@@ -6,11 +6,11 @@ import tensorflow as tf
 from Settings import Settings
 from agent.model.QMLPModel import QMLPModel
 from agent.data.BatchManager import BatchManager
+from display.HumanPlayer import HumanPlayer
 from tetris.ai.TetrisAI import TetrisAI
 
 
 def main(_):
-
     settings = Settings()
 
     rand_rate = 1
@@ -23,7 +23,7 @@ def main(_):
 
         q_network_model = QMLPModel(settings)
         batch_model = BatchManager(settings)
-        env_model = TetrisAI(settings)
+        env_model = HumanPlayer(settings)
 
         for index in range(settings.LEARNING_EPOCH):
             error = 0
@@ -70,3 +70,10 @@ def main(_):
 
 if __name__ == '__main__':
     tf.app.run()
+
+
+class TrainInfo:
+
+    def __init__(self):
+        self.current_epoch = 0
+        self.total_epoch = 0

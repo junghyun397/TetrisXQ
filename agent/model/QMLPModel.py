@@ -70,7 +70,7 @@ class QMLPModel(DeepQNetworkModel):
 
         target_q_values[0, [action]] = self.get_target_update_value(reward, next_max_q)
 
-        return input_state, target_q_values
+        return input_state[0], target_q_values[0]
 
     def get_target_update_value(self, reward, max_q):
         return reward + max_q * self._discount

@@ -4,6 +4,8 @@ from pygame.rect import Rect
 
 from display.GraphicInterface import GraphicInterface
 
+DISPLAY_FPS = 60
+
 BLOCK_SIZE = 30
 LINE_SIZE = round(BLOCK_SIZE / 10)
 
@@ -55,6 +57,10 @@ class GraphicModule(GraphicInterface):
         self._tetromino_x = tetromino_x
 
         self._update_screen()
+        pygame.time.Clock().tick(DISPLAY_FPS)
+
+    def pump_event(self):
+        pygame.event.pump()
 
     # UI Draw
 
@@ -71,8 +77,11 @@ class GraphicModule(GraphicInterface):
         self._draw_train_info()
 
         self._interface_board = np.reshape(self.tetris_model.get_board_data(), (self._board_height, self._board_width))
-        self._draw_tetromino()
-        self._draw_ghost_tetromino()
+
+        if self._tetromino_x is not -1:
+            self._draw_tetromino()
+            self._draw_ghost_tetromino()
+
         for y in range(self._board_height):
             for x in range(self._board_width):
                 if self._interface_board[y][x] != 0:

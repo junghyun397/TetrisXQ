@@ -15,6 +15,7 @@ class TetrisModel:
         self.current_shape_code = 0
         self.current_rotate = 0
         self.current_score = 0
+
         self.current_append_height = 0
 
         self._prv_height = 0
@@ -47,7 +48,53 @@ class TetrisModel:
         self.current_shape_code = shape_code
         self.current_rotate = 0
         self.current_score = 0
+
         self.current_append_height = 0
+
+    def get_board_data(self):
+        return self.board[:]
+
+    def get_board(self, y, x):
+        return self.board[y * self._board_width + x]
+
+    def set_board(self, y, x, v):
+        self.board[y * self._board_width + x] = v
+
+    # Move / Set
+
+    def rotate_block(self, y, x):
+        temp_rotate = self.current_rotate + 1
+        if temp_rotate > Tetromino.get_rotate_count(self.current_shape_code):
+            temp_rotate = 0
+
+        if self._can_update(y, x, Tetromino.get_tetromino(self.current_shape_code, temp_rotate)):
+            self.current_tetromino = Tetromino.get_tetromino(self.current_shape_code, temp_rotate)
+            self.current_rotate = temp_rotate
+            return True
+        return False
+
+    def can_move_block(self, y, x):
+        if self._can_update(y, x, self.current_tetromino):
+            return True
+        return False
+
+    def sum_tetromino(self, y, x):
+        for col in range(len(self.current_tetromino)):
+            for row in range(len(self.current_tetromino[0])):
+                if self.get_board(y + col, x + row) == 0 and self.current_tetromino[col][row] == 1:
+                    self.set_board(y + col, x + row, 1)
+        self.update_board()
+
+    def _can_update(self, y, x, shape):
+        if y > self._board_height or x < 0 or y + len(shape) > self._board_height or x + len(shape[0]) > self._board_width:
+            return False
+        for col in range(len(shape)):
+            for row in range(len(shape[0])):
+                if self.get_board(y + col, x + row) == 1 and shape[col][row] == 1:
+                    return False
+        return True
+
+    # Sum board
 
     def update_board(self):
         removed_lines = 0
@@ -76,49 +123,6 @@ class TetrisModel:
             self.is_end = True
 
         self._update_score(removed_lines)
-
-    def get_board_data(self):
-        return self.board[:]
-
-    def _get_board(self, y, x):
-        return self.board[y * self._board_width + x]
-
-    def _set_board(self, y, x, v):
-        self.board[y * self._board_width + x] = v
-
-    # Move / Set
-
-    def rotate_block(self, y, x):
-        temp_rotate = self.current_rotate + 1
-        if temp_rotate > Tetromino.get_rotate_count(self.current_shape_code):
-            temp_rotate = 0
-
-        if self._can_update(y, x, Tetromino.get_tetromino(self.current_shape_code, temp_rotate)):
-            self.current_tetromino = Tetromino.get_tetromino(self.current_shape_code, temp_rotate)
-            self.current_rotate = temp_rotate
-            return True
-        return False
-
-    def can_move_block(self, y, x):
-        if self._can_update(y, x, self.current_tetromino):
-            return True
-        return False
-
-    def sum_tetromino(self, y, x):
-        for col in range(len(self.current_tetromino)):
-            for row in range(len(self.current_tetromino[0])):
-                if self._get_board(y + col, x + row) == 0 and self.current_tetromino[col][row] == 1:
-                    self._set_board(y + col, x + row, 1)
-        self.update_board()
-
-    def _can_update(self, y, x, shape):
-        if y > self._board_height or x < 0 or y + len(shape) > self._board_height or x + len(shape[0]) > self._board_width:
-            return False
-        for col in range(len(shape)):
-            for row in range(len(shape[0])):
-                if self._get_board(y + col, x + row) == 1 and shape[col][row] == 1:
-                    return False
-        return True
 
     # Score
 

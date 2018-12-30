@@ -8,3 +8,6 @@ class DummyGraphicModule(GraphicInterface):
 
     def set_tetris_model(self, tetris_model):
         pass
+
+    def pump_event(self):
+        pass

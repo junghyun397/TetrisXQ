@@ -14,9 +14,6 @@ class HumanPlayer(EnvironmentModel):
     def __init__(self, settings, graphic_module):
         super().__init__(settings, graphic_module)
 
-        self._board_height = settings.GRID_HEIGHT
-        self._board_width = settings.GRID_WIDTH
-
         self._current_y = 0
         self._current_x = 0
         self._reset_pos()
@@ -24,11 +21,9 @@ class HumanPlayer(EnvironmentModel):
 
     def _reset_pos(self):
         self._current_y = 0
-        self._current_x = round(self._board_width / 2) - round(len(self.tetris_model.current_tetromino[0]) / 2)
+        self._current_x = round(self.board_width / 2) - round(len(self.tetris_model.current_tetromino[0]) / 2)
 
-    def action_and_reward(self, action):
-        self.tetris_model.next_state(action)
-
+    def do_action(self):
         self._reset_pos()
         self._current_next = True
 
@@ -57,8 +52,6 @@ class HumanPlayer(EnvironmentModel):
                 elif pygame.key.get_pressed()[pygame.K_d]:
                     self._on_key_press(pygame.K_d)
                 current_key_time = time.time()
-
-        return self.get_current_state(), self.get_reward(), self.tetris_model.is_end
 
     def _on_key_press(self, key):
         if key == pygame.K_w:

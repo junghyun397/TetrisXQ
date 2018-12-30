@@ -10,3 +10,7 @@ class GraphicInterface(metaclass=ABCMeta):
     @abstractmethod
     def draw_graphic(self, tetromino_y, tetromino_x):
         pass
+
+    @abstractmethod
+    def pump_event(self):
+        pass

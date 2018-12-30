@@ -28,19 +28,19 @@ class QMLPModel(DeepQNetworkModel):
         W1 = tf.Variable(tf.truncated_normal([self._states, self._hidden_size],
                                              stddev=1.0 / math.sqrt(float(self._states))))
         b1 = tf.Variable(tf.truncated_normal([self._hidden_size], stddev=0.01))
-        hidden_layer_1 = tf.nn.leaky_relu(tf.matmul(self.X, W1) + b1, 0.1, 'N1')
+        hidden_layer_1 = tf.nn.leaky_relu(tf.matmul(self.X, W1) + b1, 0.1)
 
         # 은닉1 - 은닉2
         W2 = tf.Variable(tf.truncated_normal([self._hidden_size, self._hidden_size],
                                              stddev=1.0 / math.sqrt(float(self._hidden_size))))
         b2 = tf.Variable(tf.truncated_normal([self._hidden_size], stddev=0.01))
-        hidden_layer_2 = tf.nn.leaky_relu(tf.matmul(hidden_layer_1, W2) + b2, 0.1, 'N2')
+        hidden_layer_2 = tf.nn.leaky_relu(tf.matmul(hidden_layer_1, W2) + b2, 0.1)
 
         # 은닉2 - 은닉3
         W3 = tf.Variable(tf.truncated_normal([self._hidden_size, self._hidden_size],
                                              stddev=1.0 / math.sqrt(float(self._hidden_size))))
         b3 = tf.Variable(tf.truncated_normal([self._hidden_size], stddev=0.01))
-        hidden_layer_3 = tf.nn.leaky_relu(tf.matmul(hidden_layer_2, W3) + b3, 0.1, 'N3')
+        hidden_layer_3 = tf.nn.leaky_relu(tf.matmul(hidden_layer_2, W3) + b3, 0.1)
 
         # 은닉3 - 출력
         W4 = tf.Variable(tf.truncated_normal([self._hidden_size, self._actions],

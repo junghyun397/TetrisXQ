@@ -12,10 +12,10 @@ from display.GraphicModule import GraphicModule
 from display.HumanPlayer import HumanPlayer
 from tetris.ai.TetrisAI import TetrisAI
 
-
+SAVE_POINT = 2000
 USE_LOG = True
 USE_GRAPHIC_INTERFACE = True
-ENVIRONMENT_TYPE = 'HUMAN'
+ENVIRONMENT_TYPE = 'AI'
 
 
 class TrainInfo:
@@ -30,7 +30,7 @@ def main(_):
 
     epsilon = settings.START_EPSILON
 
-    tf.set_random_seed(settings.RAND_SEED)
+    # tf.set_random_seed(settings.RAND_SEED)
 
     with tf.Session() as sess:
         writer = tf.summary.FileWriter('./board/train_log', sess.graph)
@@ -50,6 +50,7 @@ def main(_):
         init = tf.global_variables_initializer()
         sess.run(init)
 
+        print("훈련 시작: " + str(settings.LEARNING_EPOCH) + " 게임 학습...")
         for index in range(settings.LEARNING_EPOCH):
             error = 0
             current_end = False
@@ -63,11 +64,7 @@ def main(_):
                     action = random.randrange(0, settings.ACTIONS)
                 else:
                     q_values = q_network_model.get_forward(sess, current_state)[0]
-                    print(q_values)
                     action = np.argmax(q_values)
-
-                    if q_values[action] > max_q:
-                        max_q = q_values[action]
 
                 if epsilon > settings.MIN_EPSILON:
                     epsilon = epsilon * 0.999
@@ -87,8 +84,8 @@ def main(_):
             train_info.current_epoch = index + 1
             print("순번: " + str(index) + " 최대 Q: " + str(max_q) + " 진행 턴 수: " + str(turn_count) +
                   " 무작위 행동: " + str(round(epsilon * 100)) + " 전체 손실: " + str(error))
-
-        tf.train.Saver().save(sess, os.getcwd() + "./model/saved_model_TetrisXQ.ckpt")
+            if train_info.current_epoch % SAVE_POINT == 0:
+                print("모델 저장됨: " + tf.train.Saver().save(sess, os.getcwd() + "./model/saved_model_TetrisXQ.ckpt"))
 
 
 if __name__ == '__main__':

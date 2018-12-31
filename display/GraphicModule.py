@@ -4,7 +4,7 @@ from pygame.rect import Rect
 
 from display.GraphicInterface import GraphicInterface
 
-DISPLAY_FPS = 60
+DISPLAY_FPS = 120
 
 BLOCK_SIZE = 30
 LINE_SIZE = round(BLOCK_SIZE / 10)

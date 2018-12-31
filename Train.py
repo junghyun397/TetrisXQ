@@ -14,7 +14,7 @@ from tetris.ai.TetrisAI import TetrisAI
 
 SAVE_POINT = 2000
 USE_LOG = True
-USE_GRAPHIC_INTERFACE = True
+USE_GRAPHIC_INTERFACE = False
 ENVIRONMENT_TYPE = 'AI'
 
 
@@ -60,6 +60,9 @@ def main(_):
             turn_count = 0
 
             while not current_end:
+                if turn_count > settings.MAX_TURNS - 1:
+                    break
+
                 if (float(random.randrange(0, 9999)) / 10000) <= epsilon:
                     action = random.randrange(0, settings.ACTIONS)
                 else:

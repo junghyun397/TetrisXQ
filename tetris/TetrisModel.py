@@ -73,6 +73,13 @@ class TetrisModel:
             return True
         return False
 
+    def rotate_block_rate(self, y, x, rate):
+        if self._can_update(y, x, Tetromino.get_tetromino(self.current_shape_code, rate)):
+            self.current_tetromino = Tetromino.get_tetromino(self.current_shape_code, rate)
+            self.current_rotate = rate
+            return True
+        return False
+
     def can_move_block(self, y, x):
         if self._can_update(y, x, self.current_tetromino):
             return True

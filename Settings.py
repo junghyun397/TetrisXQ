@@ -7,6 +7,7 @@ class Settings:
 
         self.RAND_SEED = 503
         self.LEARNING_EPOCH = 2000
+        self.MAX_TURNS = 5000
 
         self.START_EPSILON = 1
         self.MIN_EPSILON = 0.0001

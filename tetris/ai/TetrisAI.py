@@ -3,16 +3,14 @@ import numpy as np
 from agent.EnvironmentModel import EnvironmentModel
 from tetris.Tetromino import Tetromino
 
-WEIGHT_FULL = 1000
-WEIGHT_WALL = 2
-WEIGHT_FLAT = 1
+WEIGHT_FULL = 3000
+WEIGHT_WALL = 1
+WEIGHT_FLAT = 2
 
-WEIGHT_HEIGHT = -50
-WEIGHT_HOLE = -1
+WEIGHT_HEIGHT = -10
+WEIGHT_HOLE = 0
 WEIGHT_DEEP_HOLE = -5
-WEIGHT_APERTURE = -8
-
-USE_MAX = True
+WEIGHT_APERTURE = -3
 
 
 class TetrisAI(EnvironmentModel):
@@ -41,33 +39,25 @@ class TetrisAI(EnvironmentModel):
         for index in range(len(states)):
             fulls, wall_sum, flat_sum, height, holes, deep_holes, apertures = self._get_scores(states[index])
 
-            state_score = -1
-            state_score += fulls * WEIGHT_FULL
+            state_score = 0
+            if height > self.board_height - 1:
+                state_score = -9999999
 
-            if USE_MAX:
-                state_score += max(wall_sum - self._def_walls, 0) * WEIGHT_WALL
-                state_score += max(flat_sum - self._def_flat, 0) * WEIGHT_FLAT
+            state_score += fulls ** 2 * WEIGHT_FULL
 
-                state_score += max(height - self._def_height, 0) * WEIGHT_HEIGHT
-                state_score += max(holes - self._def_holes, 0) * WEIGHT_HOLE
-                state_score += max(deep_holes - self._def_deep_holes, 0) * WEIGHT_DEEP_HOLE
-                state_score += max(apertures - self._def_apertures, 0) * WEIGHT_APERTURE
-            else:
-                state_score += (wall_sum - self._def_walls) * WEIGHT_WALL
-                state_score += (flat_sum - self._def_flat) * WEIGHT_FLAT
+            state_score += max(wall_sum - self._def_walls, 0) * WEIGHT_WALL
+            state_score += max(flat_sum - self._def_flat, 0) * WEIGHT_FLAT
 
-                state_score += (height - self._def_height) * WEIGHT_HEIGHT
-                state_score += (holes - self._def_holes) * WEIGHT_HOLE
-                state_score += (deep_holes - self._def_deep_holes) * WEIGHT_DEEP_HOLE
-                state_score += (apertures - self._def_apertures) * WEIGHT_APERTURE
+            state_score += max(height - self._def_height, 0) * WEIGHT_HEIGHT
+            state_score += max(holes - self._def_holes, 0) * WEIGHT_HOLE
+            state_score += max(deep_holes - self._def_deep_holes, 0) * WEIGHT_DEEP_HOLE
+            state_score += max(apertures - self._def_apertures, 0) * WEIGHT_APERTURE
 
             if state_score > max_score:
                 max_score = state_score
                 chosen_state = states[index]
 
-        # print(self._get_scores(chosen_state))
-
-        if len(states) == 0:
+        if chosen_state is None:
             self.tetris_model.is_end = True
         else:
             self.tetris_model.board = chosen_state
@@ -81,7 +71,7 @@ class TetrisAI(EnvironmentModel):
         index = 0
         for x in range(self.board_width):
             for rotate in range(Tetromino.get_rotate_count(self.tetris_model.current_shape_code) + 1):
-                if self.tetris_model.rotate_block_rate(0, x, rotate):
+                    self.tetris_model.rotate_block_rate(0, x, rotate)
                     n_states = self.tetris_model.get_board_data()
                     cov_y = 0
                     while self.tetris_model.can_move_block(cov_y + 1, x):

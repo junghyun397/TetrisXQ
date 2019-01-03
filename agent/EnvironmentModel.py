@@ -31,7 +31,7 @@ class EnvironmentModel(metaclass=ABCMeta):
 
     def get_reward(self):
         reward = 0
-        reward += -1 * self.tetris_model.current_score
+        reward += -1 * self.tetris_model.current_score * 0.01
         if self.tetris_model.is_end:
-            reward = 1000
+            reward = 100
         return reward

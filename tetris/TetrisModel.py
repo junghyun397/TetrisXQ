@@ -131,6 +131,10 @@ class TetrisModel:
 
         self._update_score(removed_lines)
 
+    @staticmethod
+    def _evaluation_board(state):
+        pass
+
     # Score
 
     def _update_score(self, removed_lines):

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import random
 
@@ -14,7 +15,7 @@ from tetris.ai.TetrisAI import TetrisAI
 
 SAVE_POINT = 2000
 USE_LOG = True
-USE_GRAPHIC_INTERFACE = False
+USE_GRAPHIC_INTERFACE = True
 ENVIRONMENT_TYPE = 'AI'
 
 
@@ -30,11 +31,7 @@ def main(_):
 
     epsilon = settings.START_EPSILON
 
-    # tf.set_random_seed(settings.RAND_SEED)
-
     with tf.Session() as sess:
-        writer = tf.summary.FileWriter('./board/train_log', sess.graph)
-
         train_info = TrainInfo(settings)
 
         q_network_model = QMLPModel(settings)
@@ -47,16 +44,16 @@ def main(_):
         else:
             env_model = TetrisAI(settings, graphic_interface)
 
+        writer = tf.summary.FileWriter('./board/train_log', sess.graph)
+
         init = tf.global_variables_initializer()
         sess.run(init)
-
         print("훈련 시작: " + str(settings.LEARNING_EPOCH) + " 게임 학습...")
         for index in range(settings.LEARNING_EPOCH):
             error = 0
             current_end = False
             current_state = env_model.get_current_state()
 
-            max_q = 0
             turn_count = 0
 
             while not current_end:
@@ -79,16 +76,19 @@ def main(_):
                 current_end = next_end
 
                 input_state, target_values = batch_model.get_batch(sess, q_network_model.get_target_value)
-                loss = q_network_model.optimize_step(sess, input_state, target_values)
+                summary, loss = q_network_model.optimize_step(sess, input_state, target_values)
+                # writer.add_summary(summary, index)
                 error += loss
-
                 turn_count += 1
 
             train_info.current_epoch = index + 1
-            print("순번: " + str(index) + " 최대 Q: " + str(max_q) + " 진행 턴 수: " + str(turn_count) +
-                  " 무작위 행동: " + str(round(epsilon * 100)) + " 전체 손실: " + str(error))
+            print("순번: " + str(train_info.current_epoch) + " 진행 턴 수: " + str(turn_count) +
+                  " 무작위 행동: " + str(round(epsilon * 100)) + " 평균 손실: " + str(round(error/turn_count)))
             if train_info.current_epoch % SAVE_POINT == 0:
                 print("모델 저장됨: " + tf.train.Saver().save(sess, os.getcwd() + "./model/saved_model_TetrisXQ.ckpt"))
+
+        writer.close()
+        print("훈련 종료: " + str(settings.LEARNING_EPOCH) + " 게임 학습 완료")
 
 
 if __name__ == '__main__':

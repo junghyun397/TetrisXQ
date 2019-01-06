@@ -72,9 +72,6 @@ class QMLPModel(DeepQNetworkModel):
         next_q_values = self.get_forward(sess, next_state)
         next_max_q = np.amax(next_q_values)
 
-        target_q_values[0, [action]] = self.get_target_update_value(reward, next_max_q)
+        target_q_values[0, [action]] = reward + next_max_q * self._discount
 
         return input_state[0], target_q_values[0]
-
-    def get_target_update_value(self, reward, max_q):
-        return reward + max_q * self._discount

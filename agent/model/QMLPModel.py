@@ -24,28 +24,24 @@ class QMLPModel(DeepQNetworkModel):
         self.X = tf.placeholder(tf.float32, [None, self._states])
         self.Y = tf.placeholder(tf.float32, [None, self._actions])
 
-        # 입력 - 은닉1
         with tf.name_scope("layer_1"):
             W1 = tf.Variable(tf.truncated_normal([self._states, self._hidden_size],
                                                  stddev=1.0 / math.sqrt(float(self._states))))
             b1 = tf.Variable(tf.truncated_normal([self._hidden_size], stddev=0.01))
             hidden_layer_1 = tf.nn.leaky_relu(tf.matmul(self.X, W1) + b1, 0.1)
 
-        # 은닉1 - 은닉2
         with tf.name_scope("layer_2"):
             W2 = tf.Variable(tf.truncated_normal([self._hidden_size, self._hidden_size],
                                                  stddev=1.0 / math.sqrt(float(self._hidden_size))))
             b2 = tf.Variable(tf.truncated_normal([self._hidden_size], stddev=0.01))
             hidden_layer_2 = tf.nn.leaky_relu(tf.matmul(hidden_layer_1, W2) + b2, 0.1)
 
-        # 은닉2 - 은닉3
         with tf.name_scope("layer_3"):
             W3 = tf.Variable(tf.truncated_normal([self._hidden_size, self._hidden_size],
                                                  stddev=1.0 / math.sqrt(float(self._hidden_size))))
             b3 = tf.Variable(tf.truncated_normal([self._hidden_size], stddev=0.01))
             hidden_layer_3 = tf.nn.leaky_relu(tf.matmul(hidden_layer_2, W3) + b3, 0.1)
 
-        # 은닉3 - 출력
         with tf.name_scope("layer_4"):
             W4 = tf.Variable(tf.truncated_normal([self._hidden_size, self._actions],
                                                  stddev=1.0 / math.sqrt(float(self._hidden_size))))
@@ -53,10 +49,8 @@ class QMLPModel(DeepQNetworkModel):
             self.output_layer = tf.matmul(hidden_layer_3, W4) + b4
 
     def _build_optimizer(self, settings):
-        # 평균 제곱 오차
         with tf.name_scope("cost"):
-            self.cost = tf.reduce_sum(tf.square(self.Y - self.output_layer)) / (2 * settings.BATCH_SIZE)
-        # 경사 하강 최적화
+            self.cost = tf.losses.mean_squared_error(self.Y, self.output_layer)
         self.optimizer = tf.train.RMSPropOptimizer(settings.LEARNING_LATE).minimize(self.cost)
 
     # Model Function

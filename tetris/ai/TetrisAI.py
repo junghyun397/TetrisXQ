@@ -10,7 +10,7 @@ WEIGHT_FLAT = 2
 WEIGHT_HEIGHT = -10
 WEIGHT_HOLE = 0
 WEIGHT_DEEP_HOLE = -5
-WEIGHT_APERTURE = -3
+WEIGHT_DOT = -3
 
 
 class TetrisAI(EnvironmentModel):
@@ -26,125 +26,38 @@ class TetrisAI(EnvironmentModel):
         self._def_deep_holes = 0
         self._def_apertures = 0
 
-        self._def_x = round(self.board_width / 2) - round(len(self.tetris_model.current_tetromino[0]) / 2)
-
     def do_action(self):
-        states = self._get_state_list()
+        max_score = 0
         chosen_state = None
-        max_score = -1000
 
-        _, self._def_walls, self._def_flat, self._def_height, self._def_holes, self._def_deep_holes, self._def_apertures \
-            = self._get_scores(self.tetris_model.get_board_data())
+        states = self._get_state_list()
+        for state in states:
+            board, y, x, rotate_rate = state
+            board, full_line, height, f_height = self.tetris_model.analysis_board(board)
+            wall, hole, deep_hole, dot = self.tetris_model.analysis_board(state)
 
-        for index in range(len(states)):
-            fulls, wall_sum, flat_sum, height, holes, deep_holes, apertures = self._get_scores(states[index])
-
-            state_score = 0
-            if height > self.board_height - 1:
-                state_score = -9999999
-
-            state_score += fulls ** 2 * WEIGHT_FULL
-
-            state_score += max(wall_sum - self._def_walls, 0) * WEIGHT_WALL
-            state_score += max(flat_sum - self._def_flat, 0) * WEIGHT_FLAT
-
-            state_score += max(height - self._def_height, 0) * WEIGHT_HEIGHT
-            state_score += max(holes - self._def_holes, 0) * WEIGHT_HOLE
-            state_score += max(deep_holes - self._def_deep_holes, 0) * WEIGHT_DEEP_HOLE
-            state_score += max(apertures - self._def_apertures, 0) * WEIGHT_APERTURE
-
-            if state_score > max_score:
-                max_score = state_score
-                chosen_state = states[index]
+            score = 0
+            if score > max_score:
+                max_score = score
+                chosen_state = state
 
         if chosen_state is None:
             self.tetris_model.is_end = True
         else:
-            self.tetris_model.board = chosen_state
-        self.tetris_model.update_board()
-
-        self.graphic_module.draw_graphic(-1, -1)
-        self.graphic_module.pump_event()
+            board, _, _, _ = chosen_state
+            self.tetris_model.board = board
 
     def _get_state_list(self):
         states = dict()
-        index = 0
-        for x in range(self.board_width):
-            for rotate in range(Tetromino.get_rotate_count(self.tetris_model.current_shape_code) + 1):
-                    self.tetris_model.rotate_block_rate(0, x, rotate)
-                    n_states = self.tetris_model.get_board_data()
-                    cov_y = 0
-                    while self.tetris_model.can_move_block(cov_y + 1, x):
-                        cov_y += 1
-                    for col in range(len(self.tetris_model.current_tetromino)):
-                        for row in range(len(self.tetris_model.current_tetromino[0])):
-                            if self.tetris_model.get_board(cov_y + col, x + row) == 0 \
-                                    and self.tetris_model.current_tetromino[col][row] == 1:
-                                n_states[(cov_y + col) * self.board_width + x + row] = 1
-                    states[index] = n_states
-                    index += 1
-        return states
 
-    def _get_scores(self, state):
-        fulls = 0
-        wall_sum = 0
-        flat_sum = 0
-
-        height = 0
-        holes = 0
-        deep_holes = 0
-        apertures = 0
-
-        sides = self.tetris_model.get_clear_board()
-
-        for y in range(self.board_height):
-            line_sum = np.sum(state[y * self.board_width:(y + 1) * self.board_width])
-            wall_sum += state[y * self.board_width] + state[y * self.board_width + self.board_width - 1]
-            if line_sum == self.board_width:
-                fulls += 1
-            elif line_sum > 0:
-                height += 1
-
-            chain_x = False
+        num_index = 0
+        rotate_count = Tetromino.get_rotate_count(self.tetris_model.current_shape_code) + 1
+        for rotate_rate in range(rotate_count):
             for x in range(self.board_width):
-                d_hole = 0
-                sum_side = 0
-                if x is not 0:
-                    sum_side += state[y * self.board_width + x - 1]
-                    d_hole += state[y * self.board_width + x - 1]
-                else:
-                    sum_side += 1
-                if x is not self.board_width - 1:
-                    sum_side += state[y * self.board_width + x + 1]
-                    d_hole += state[y * self.board_width + x + 1]
-                    if state[y * self.board_width + x] + state[y * self.board_width + x + 1] == 2:
-                        if chain_x:
-                            flat_sum += 1
-                        else:
-                            chain_x = True
-                else:
-                    sum_side += 1
-                sides[y * self.board_width + x] = sum_side
-                if sum_side > 0:
-                    holes += 1
-
-        for x_index in range(self.board_width):
-            has_deep_hole = False
-            for y_index in range(self.board_height):
-                dy_index = self.board_height - y_index - 1
-                if dy_index < self.board_height - 3:
-                    if sides[dy_index * self.board_width + x_index] \
-                            + sides[(dy_index + 1) * self.board_width + x_index] \
-                            + sides[(dy_index + 2) * self.board_width + x_index] == 6 and state[
-                        dy_index * self.board_width + x_index] + state[(dy_index + 1) * self.board_width + x_index] + \
-                            state[(dy_index + 2) * self.board_width + x_index] == 0 and not has_deep_hole:
-                        deep_holes += 1
-                        has_deep_hole = True
-                if dy_index < self.board_height - 1:
-                    if state[dy_index * self.board_width + x_index] == 0 and state[(dy_index + 1) * self.board_width + x_index] == 1:
-                        ddy_index = 0
-                        while state[(dy_index + ddy_index) * self.board_width + x_index] == 0 and dy_index + ddy_index < self.board_height - 1:
-                            ddy_index += 1
-                            apertures += ddy_index
-
-        return fulls, wall_sum, flat_sum, height, holes, deep_holes, apertures
+                if self.tetris_model.rotate_block_rate(0, x, rotate_rate):
+                    dy = 0
+                    while self.tetris_model.can_move_block(dy, x):
+                        dy += 1
+                    states[num_index] = self.tetris_model.get_sum_tetromino_board(dy, x), dy, x, rotate_rate
+                    num_index += 1
+        return states

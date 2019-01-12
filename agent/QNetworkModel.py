@@ -14,7 +14,3 @@ class DeepQNetworkModel(metaclass=ABCMeta):
     @abstractmethod
     def get_target_value(self, sess, input_state, next_state, action, reward):
         pass
-
-    @abstractmethod
-    def get_target_update_value(self, reward, max_q):
-        pass

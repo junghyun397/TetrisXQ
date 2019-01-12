@@ -16,7 +16,7 @@ from tetris.ai.TetrisAI import TetrisAI
 SAVE_POINT = 2000
 USE_LOG = True
 USE_GRAPHIC_INTERFACE = True
-ENVIRONMENT_TYPE = 'AI'
+ENVIRONMENT_TYPE = 'HUMAN'
 
 
 class TrainInfo:

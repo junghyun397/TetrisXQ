@@ -86,11 +86,16 @@ class TetrisModel:
         return False
 
     def sum_tetromino(self, y, x):
+        self.board = self.get_sum_tetromino_board(y, x)
+        self.update_board()
+
+    def get_sum_tetromino_board(self, y, x):
+        n_board = self.get_board_data()
         for col in range(len(self.current_tetromino)):
             for row in range(len(self.current_tetromino[0])):
                 if self.get_board(y + col, x + row) == 0 and self.current_tetromino[col][row] == 1:
-                    self.set_board(y + col, x + row, 1)
-        self.update_board()
+                    n_board[(y + col) * self._board_width + x + row] = 1
+        return n_board
 
     def _can_update(self, y, x, shape):
         if y > self._board_height or x < 0 or y + len(shape) > self._board_height or x + len(shape[0]) > self._board_width:
@@ -104,24 +109,7 @@ class TetrisModel:
     # Sum board
 
     def update_board(self):
-        removed_lines = 0
-        filled_lines = 0
-        append_lines = 0
-
-        for index in range(self._board_height):
-            line_sum = np.sum(self.board[index * self._board_width:(index + 1) * self._board_width])
-            if line_sum == self._board_width:
-                new_board = self.get_board_data()
-                for z_index in range(self._board_width):
-                    new_board[z_index] = 0
-                for s_index in range(index * self._board_width):
-                    new_board[self._board_width + s_index] = self.board[s_index]
-                self.board = new_board
-                removed_lines += 1
-            elif line_sum > 0:
-                if line_sum > 2:
-                    append_lines += 1
-                filled_lines += 1
+        self.board, removed_lines, filled_lines, append_lines = self.get_removed_board(self.board)
 
         self.current_append_height = self._prv_height - append_lines
         self._prv_height = append_lines
@@ -131,9 +119,36 @@ class TetrisModel:
 
         self._update_score(removed_lines)
 
-    @staticmethod
-    def _evaluation_board(state):
-        pass
+    def get_removed_board(self, board):
+        removed_lines = 0
+        filled_lines = 0
+        append_lines = 0
+
+        board = board[:]
+
+        for index in range(self._board_height):
+            line_sum = np.sum(board[index * self._board_width:(index + 1) * self._board_width])
+            if line_sum == self._board_width:
+                n_board = board[:]
+                for z_index in range(self._board_width):
+                    n_board[z_index] = 0
+                for s_index in range(index * self._board_width):
+                    n_board[self._board_width + s_index] = board[s_index]
+                board = n_board
+                removed_lines += 1
+            elif line_sum > 0:
+                if line_sum > 2:
+                    append_lines += 1
+                filled_lines += 1
+
+        return board, removed_lines, filled_lines, append_lines
+
+    def analysis_board(self, board):
+        wall = 0
+        hole = 0
+        deep_hole = 0
+        dot = 0
+        return wall, hole, deep_hole, dot
 
     # Score
 

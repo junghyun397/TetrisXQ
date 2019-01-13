@@ -8,7 +8,7 @@ from display.HumanPlayer import HumanPlayer
 from tetris.ai.TetrisAI import TetrisAI
 
 USE_GRAPHIC_INTERFACE = True
-ENVIRONMENT_TYPE = "HUMAN"
+ENVIRONMENT_TYPE = "AI"
 
 # print("Use Graphic Interface: (YES/NO)")
 # if input() == "YES":

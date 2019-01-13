@@ -144,11 +144,32 @@ class TetrisModel:
         return board, removed_lines, filled_lines, append_lines
 
     def analysis_board(self, board):
-        wall = 0
-        hole = 0
+        board, full, height, _ = self.get_removed_board(board)
+
         deep_hole = 0
-        dot = 0
-        return wall, hole, deep_hole, dot
+        roof = 0
+
+        def get_board(fy, fx):
+            if fy >= self._board_height or fx >= self._board_width or fx < 0:
+                return 1
+            return board[fy * self._board_width + fx]
+
+        for x in range(self._board_width):
+            deep_hole_count = 0
+            has_roof = False
+            for y in range(self._board_height):
+                if has_roof:
+                    if get_board(y, x) == 0:
+                        roof += 1
+                elif get_board(y, x) == 1:
+                    has_roof = True
+                elif deep_hole_count == 0:
+                    if get_board(y, x) == 0 and get_board(y, x - 1) == 1 and get_board(y, x + 1) == 1:
+                        deep_hole_count += 1
+                        if deep_hole_count > 2:
+                            deep_hole += 1
+
+        return full, height, deep_hole, roof
 
     # Score
 

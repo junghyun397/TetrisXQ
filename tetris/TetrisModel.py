@@ -166,8 +166,11 @@ class TetrisModel:
                 elif deep_hole_count == 0:
                     if get_board(y, x) == 0 and get_board(y, x - 1) == 1 and get_board(y, x + 1) == 1:
                         deep_hole_count += 1
-                        if deep_hole_count > 2:
-                            deep_hole += 1
+                elif deep_hole_count > 0:
+                    if get_board(y, x) == 0:
+                        deep_hole_count += 1
+                    if deep_hole_count > 2:
+                        deep_hole += 1
 
         return full, height, deep_hole, roof
 

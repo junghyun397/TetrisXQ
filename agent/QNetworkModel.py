@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 class DeepQNetworkModel(metaclass=ABCMeta):
 
     @abstractmethod
-    def optimize_step(self, sess, x, y):
+    def optimize_step(self, sess, x, y, summary):
         pass
 
     @abstractmethod

@@ -1,7 +1,7 @@
 from agent.EnvironmentModel import EnvironmentModel
 from tetris.Tetromino import Tetromino
 
-WEIGHT_FULL = 10
+WEIGHT_FULL = 40
 WEIGHT_FLAT = 2
 
 WEIGHT_POST_SIDE = 2

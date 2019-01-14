@@ -7,7 +7,7 @@ class Settings:
 
         self.RAND_SEED = 503
         self.LEARNING_EPOCH = 2000
-        self.MAX_TURNS = 5000
+        self.MAX_TURNS = 100000
 
         self.START_EPSILON = 1
         self.MIN_EPSILON = 0.001
@@ -17,7 +17,7 @@ class Settings:
         self.HIDDEN_SIZE = 100
 
         self.DISCOUNT = 0.9
-        self.LEARNING_LATE = 0.1
+        self.LEARNING_LATE = 0.5
 
-        self.BATCH_SIZE = 1000
-        self.MAX_MEMORY = 2000
+        self.BATCH_SIZE = 100
+        self.MAX_MEMORY = 5000

@@ -14,7 +14,7 @@ class Settings:
 
         self.STATES = self.GRID_WIDTH * self.GRID_HEIGHT
         self.ACTIONS = 7
-        self.HIDDEN_SIZE = 100
+        self.HIDDEN_SIZE = 300
 
         self.DISCOUNT = 0.9
         self.LEARNING_LATE = 0.5

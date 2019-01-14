@@ -3,12 +3,12 @@ import os
 import random
 import time
 
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 
 from Settings import Settings
-from agent.model.QMLPModel import QMLPModel
 from agent.data.BatchManager import BatchManager
+from agent.model.QMLPModel import QMLPModel
 from display.DummyGraphicModule import DummyGraphicModule
 from display.GraphicModule import GraphicModule
 from display.HumanPlayer import HumanPlayer
@@ -56,6 +56,9 @@ def main(_):
             current_end = False
             current_state = env_model.get_current_state()
 
+            action_count = 0
+            prv_action = 0
+
             while not current_end:
                 start_time = time.time()
 
@@ -67,6 +70,13 @@ def main(_):
                 else:
                     q_values = q_network_model.get_forward(sess, current_state)[0]
                     action = np.argmax(q_values)
+
+                    if action == prv_action:
+                        action_count += 1
+                        if action_count > 8:
+                            action = random.randrange(0, settings.ACTIONS)
+                            action_count = 0
+                    prv_action = action
 
                 if epsilon > settings.MIN_EPSILON:
                     epsilon = epsilon * 0.999
@@ -80,7 +90,7 @@ def main(_):
                 input_state, target_values = batch_module.get_batch(sess, q_network_model.get_target_value)
                 summary, cost = q_network_model.optimize_step(sess, input_state, target_values, merged_summary)
                 writer.add_summary(summary, train_step)
-                print("step: " + str(train_step) + " 보상: " + str(reward) + " 오차: " + str(cost) + " 시간: " + str(time.time() - start_time))
+                # print("step: " + str(train_step) + " 보상: " + str(reward) + " 오차: " + str(cost) + " 시간: " + str(time.time() - start_time))
                 train_step += 1
                 turn_count += 1
 

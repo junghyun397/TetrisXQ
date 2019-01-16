@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import random
-import time
 
 import numpy as np
 import tensorflow as tf
@@ -60,9 +59,7 @@ def main(_):
             prv_action = 0
 
             while not current_end:
-                start_time = time.time()
-
-                if turn_count > settings.MAX_TURNS - 1:
+                if turn_count >= settings.MAX_TURNS:
                     break
 
                 if (float(random.randrange(0, 9999)) / 10000) <= epsilon:
@@ -90,12 +87,12 @@ def main(_):
                 input_state, target_values = batch_module.get_batch(sess, q_network_model.get_target_value)
                 summary, cost = q_network_model.optimize_step(sess, input_state, target_values, merged_summary)
                 writer.add_summary(summary, train_step)
-                # print("step: " + str(train_step) + " 보상: " + str(reward) + " 오차: " + str(cost) + " 시간: " + str(time.time() - start_time))
                 train_step += 1
                 turn_count += 1
 
             train_info.current_epoch = index + 1
-            print("epoch: " + str(train_info.current_epoch) + " 진행 턴 수: " + str(turn_count) + " 무작위 행동: " + str(round(epsilon * 100)))
+            print("epoch: " + str(train_info.current_epoch) + " 전체 step: " + str(train_step) +
+                  " 진행 턴 수: " + str(turn_count) + " 무작위 행동: " + str(round(epsilon * 100)))
 
             if train_info.current_epoch % SAVE_POINT == 0:
                 print("모델 저장됨: " + tf.train.Saver().save(sess, os.getcwd() + "./train/saved_model/saved_model_TetrisXQ.ckpt"))

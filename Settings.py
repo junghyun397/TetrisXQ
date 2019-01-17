@@ -9,13 +9,13 @@ class Settings:
         self.MAX_TURNS = 100000
 
         self.START_EPSILON = 1
-        self.MIN_EPSILON = 0.05
+        self.MIN_EPSILON = 0.001
 
         self.STATES = self.GRID_WIDTH * self.GRID_HEIGHT
         self.ACTIONS = 7
         self.HIDDEN_SIZE = 300
 
-        self.DISCOUNT = 0.4
+        self.DISCOUNT = 0.5
         self.LEARNING_LATE = 0.4
 
         self.BATCH_SIZE = 100

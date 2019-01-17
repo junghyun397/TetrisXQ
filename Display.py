@@ -10,13 +10,13 @@ from tetris.ai.TetrisAI import TetrisAI
 USE_GRAPHIC_INTERFACE = True
 ENVIRONMENT_TYPE = "AI"
 
-# print("Use Graphic Interface: (YES/NO)")
-# if input() == "YES":
-#     USE_GRAPHIC_INTERFACE = True
-#
-# print("Environment Type: (HUMAN/AI")
-# if input() == "AI":
-#     ENVIRONMENT_TYPE = "AI"
+print("Use Graphic Interface: (YES/NO Enter=YES)")
+if input().upper() == "NO":
+    USE_GRAPHIC_INTERFACE = False
+
+print("Environment Type: (HUMAN/AI Enter=AI)")
+if input().upper() == "HUMAN":
+    ENVIRONMENT_TYPE = "HUMAN"
 
 settings = Settings()
 train_info = TrainInfo(settings)

@@ -55,9 +55,6 @@ def main(_):
             current_end = False
             current_state = env_model.get_current_state()
 
-            action_count = 0
-            prv_action = 0
-
             while not current_end:
                 if turn_count >= settings.MAX_TURNS:
                     break
@@ -67,13 +64,6 @@ def main(_):
                 else:
                     q_values = q_network_model.get_forward(sess, current_state)[0]
                     action = np.argmax(q_values)
-
-                    if action == prv_action:
-                        action_count += 1
-                        if action_count > 8:
-                            action = random.randrange(0, settings.ACTIONS)
-                            action_count = 0
-                    prv_action = action
 
                 if epsilon > settings.MIN_EPSILON:
                     epsilon = epsilon * 0.999

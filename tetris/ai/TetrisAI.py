@@ -5,7 +5,7 @@ from tetris.Tetromino import Tetromino
 class Weight:
 
     def __init__(self):
-        self.WEIGHT_FULL = 40
+        self.WEIGHT_FULL = 20
         self.WEIGHT_FLAT = 2
 
         self.WEIGHT_POST_SIDE = 2

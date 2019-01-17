@@ -21,8 +21,13 @@ class EnvironmentModel(metaclass=ABCMeta):
         self._prv_deep_hole = 0
         self._prv_roof = 0
 
+        self._prv_action = -1
+        self._action_count = 0
+        self._action_correction_weight = 0
+
     def action_and_reward(self, action):
         self.tetris_model.next_state(action)
+        self._action_correction(action)
         self.do_action()
         return self.get_current_state(), self.get_reward(), self.tetris_model.is_end
 
@@ -41,7 +46,9 @@ class EnvironmentModel(metaclass=ABCMeta):
         reward += max(0, height - self._prv_height) * 0.1
         reward += max(0, deep_hole - self._prv_deep_hole) * 0.5
         reward += max(0, roof - self._prv_roof) * 0.5
+        reward += self._action_correction_weight
 
+        self._action_correction_weight = 0
         self._prv_height = height
         self._prv_deep_hole = deep_hole
         self._prv_roof = roof
@@ -49,3 +56,11 @@ class EnvironmentModel(metaclass=ABCMeta):
         if self.tetris_model.is_end:
             reward = 100
         return reward
+
+    def _action_correction(self, action):
+        if self._prv_action == action:
+            self._action_count += 1
+            if self._action_count > 10:
+                self._action_correction_weight = -20
+        else:
+            self._action_count = 0

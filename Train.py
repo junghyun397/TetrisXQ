@@ -56,6 +56,7 @@ def main(_):
             current_state = env_model.get_current_state()
 
             while not current_end:
+                train_step += 1
                 if turn_count >= settings.MAX_TURNS:
                     break
 
@@ -77,12 +78,10 @@ def main(_):
                 input_state, target_values = batch_module.get_batch(sess, q_network_model.get_target_value)
                 summary, cost = q_network_model.optimize_step(sess, input_state, target_values, merged_summary)
                 writer.add_summary(summary, train_step)
-                train_step += 1
-                turn_count += 1
 
             train_info.current_epoch = index + 1
             print("epoch: " + str(train_info.current_epoch) + " 전체 step: " + str(train_step) + " 총 점수: " + str(round(env_model.tetris_model.score)) +
-                  " 진행 턴 수: " + str(turn_count) + " 무작위 행동: " + str(round(epsilon * 100)))
+                  " 진행 턴 수: " + str(env_model.tetris_model.turns) + " 무작위 행동: " + str(round(epsilon * 100)))
 
             if train_info.current_epoch % SAVE_POINT == 0:
                 print("모델 저장됨: " + tf.train.Saver().save(sess, os.getcwd() + "./train/saved_model/saved_model_TetrisXQ.ckpt"))

@@ -21,6 +21,7 @@ class TetrisModel:
         self._prv_height = 0
 
         self.is_end = False
+        self.turns = 0
         self.score = 0
 
         self.clear_board()
@@ -33,6 +34,7 @@ class TetrisModel:
     def clear_board(self):
         self.board = self.get_clear_board()
         self.is_end = False
+        self.turns = 0
         self.score = 0
 
         self._prv_height = 0
@@ -43,6 +45,8 @@ class TetrisModel:
         if self.is_end:
             self.clear_board()
             return
+
+        self.turns += 1
 
         self.current_tetromino = Tetromino.get_tetromino(shape_code, 0)
         self.current_shape_code = shape_code

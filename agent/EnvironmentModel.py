@@ -42,7 +42,8 @@ class EnvironmentModel(metaclass=ABCMeta):
 
     def get_reward(self):
         reward = 0
-        reward += -0.5 * self.tetris_model.current_score
+        reward += -0.05 * self.tetris_model.current_score
+        reward += -0.01 * self.tetris_model.turns
 
         _, height, deep_hole, roof = self.tetris_model.analysis_board(self.tetris_model.board)
         reward += max(0, height - self._prv_height) * 2

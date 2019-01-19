@@ -17,6 +17,8 @@ class EnvironmentModel(metaclass=ABCMeta):
         self.graphic_module = graphic_module
         self.graphic_module.set_tetris_model(self.tetris_model)
 
+        self.end_point = 0
+
         self._prv_height = 0
         self._prv_deep_hole = 0
         self._prv_roof = 0
@@ -40,12 +42,12 @@ class EnvironmentModel(metaclass=ABCMeta):
 
     def get_reward(self):
         reward = 0
-        reward += -1 * self.tetris_model.current_score
+        reward += -0.5 * self.tetris_model.current_score
 
         _, height, deep_hole, roof = self.tetris_model.analysis_board(self.tetris_model.board)
-        reward += max(0, height - self._prv_height) * 0.1
-        reward += max(0, deep_hole - self._prv_deep_hole) * 0.5
-        reward += max(0, roof - self._prv_roof) * 0.5
+        reward += max(0, height - self._prv_height) * 2
+        reward += max(0, deep_hole - self._prv_deep_hole) * 5
+        reward += max(0, roof - self._prv_roof) * 5
         reward += self._action_correction_weight
 
         self._action_correction_weight = 0
@@ -54,13 +56,14 @@ class EnvironmentModel(metaclass=ABCMeta):
         self._prv_roof = roof
 
         if self.tetris_model.is_end:
-            reward = 100
+            reward = 1000
         return reward
 
     def _action_correction(self, action):
         if self._prv_action == action:
             self._action_count += 1
             if self._action_count > 10:
-                self._action_correction_weight = -20
+                self._action_correction_weight = min(1000, round(1.2 ** self._action_count)) * -1
         else:
             self._action_count = 0
+        self._prv_action = action

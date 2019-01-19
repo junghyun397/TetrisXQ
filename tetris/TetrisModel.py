@@ -179,7 +179,3 @@ class TetrisModel:
     def _update_score(self, removed_lines):
         self.current_score = abs(removed_lines ** 1.5 * 10)
         self.score += self.current_score
-
-        if self.is_end:
-            self.current_score = 0
-            self.score = 0

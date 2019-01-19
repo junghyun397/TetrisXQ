@@ -25,6 +25,7 @@ class TetrisAI(EnvironmentModel):
         self._opt_weight = Weight()
         self._weight = Weight()
 
+        self._opt_weight.WEIGHT_FULL = 50
         self._opt_weight.WEIGHT_POST_FLOOR = 5
         self._opt_weight.WEIGHT_HEIGHT = -10
         self._opt_weight.WEIGHT_DEEP_HOLE = -0.1
@@ -57,8 +58,8 @@ class TetrisAI(EnvironmentModel):
             score += deep_hole * self._weight.WEIGHT_DEEP_HOLE
             score += roof * self._weight.WEIGHT_ROOF
 
-            if height > self.board_height - 1:
-                score = -999999999
+            if height == self.board_height:
+                score += -999999999
 
             if score > max_score:
                 max_score = score

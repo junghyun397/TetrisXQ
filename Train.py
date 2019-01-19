@@ -81,7 +81,7 @@ def main(_):
                 turn_count += 1
 
             train_info.current_epoch = index + 1
-            print("epoch: " + str(train_info.current_epoch) + " 전체 step: " + str(train_step) +
+            print("epoch: " + str(train_info.current_epoch) + " 전체 step: " + str(train_step) + " 총 점수: " + str(round(env_model.tetris_model.score)) +
                   " 진행 턴 수: " + str(turn_count) + " 무작위 행동: " + str(round(epsilon * 100)))
 
             if train_info.current_epoch % SAVE_POINT == 0:

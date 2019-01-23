@@ -15,8 +15,8 @@ class Settings:
         self.ACTIONS = 7
         self.HIDDEN_SIZE = 300
 
-        self.DISCOUNT = 0.4
-        self.LEARNING_LATE = 0.1
+        self.DISCOUNT = 0.8
+        self.LEARNING_LATE = 0.2
 
         self.BATCH_SIZE = 100
-        self.MAX_MEMORY = 5000
+        self.MAX_MEMORY = 500

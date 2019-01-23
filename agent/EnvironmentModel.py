@@ -29,8 +29,8 @@ class EnvironmentModel(metaclass=ABCMeta):
 
     def action_and_reward(self, action):
         self.tetris_model.next_state(action)
-        self._action_correction(action)
         self.do_action()
+        self._action_correction(action)
         return self.get_current_state(), self.get_reward(), self.tetris_model.is_end
 
     @abstractmethod
@@ -41,14 +41,14 @@ class EnvironmentModel(metaclass=ABCMeta):
         return np.reshape(self.tetris_model.get_board_data(), (1, self._states))
 
     def get_reward(self):
-        reward = 0
-        reward += -0.05 * self.tetris_model.current_score
+        reward = -1
+        reward += -0.01 * self.tetris_model.current_score
         reward += -0.01 * self.tetris_model.turns
 
         _, height, deep_hole, roof = self.tetris_model.analysis_board(self.tetris_model.board)
-        reward += max(0, height - self._prv_height) * 2
-        reward += max(0, deep_hole - self._prv_deep_hole) * 5
-        reward += max(0, roof - self._prv_roof) * 5
+        reward += 2 * max(0, height - self._prv_height)
+        reward += 5 * max(0, deep_hole - self._prv_deep_hole)
+        reward += 5 * max(0, roof - self._prv_roof)
         reward += self._action_correction_weight
 
         self._action_correction_weight = 0
@@ -57,14 +57,14 @@ class EnvironmentModel(metaclass=ABCMeta):
         self._prv_roof = roof
 
         if self.tetris_model.is_end:
-            reward = 1000
+            reward = 2000
         return reward
 
     def _action_correction(self, action):
         if self._prv_action == action:
             self._action_count += 1
-            if self._action_count > 10:
-                self._action_correction_weight = min(1000, round(1.2 ** self._action_count)) * -1
+            if self._action_count > 8:
+                self._action_correction_weight = -1 * min(50, round(1.2 ** self._action_count))
         else:
             self._action_count = 0
         self._prv_action = action

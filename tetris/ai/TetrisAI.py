@@ -69,7 +69,7 @@ class TetrisAI(EnvironmentModel):
             self.tetris_model.is_end = True
             self.graphic_module.draw_graphic(-1, -1)
         else:
-            b, y, x, rotate, _, _ = chosen_state
+            _, y, x, rotate, _, _ = chosen_state
             self.tetris_model.rotate_block_rate(y, x, rotate)
             self.graphic_module.draw_graphic(y, x)
             self.tetris_model.sum_tetromino(y, x)

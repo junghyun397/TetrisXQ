@@ -16,10 +16,6 @@ class TetrisModel:
         self.current_rotate = 0
         self.current_score = 0
 
-        self.current_append_height = 0
-
-        self._prv_height = 0
-
         self.is_end = False
         self.turns = 0
         self.score = 0
@@ -37,8 +33,6 @@ class TetrisModel:
         self.turns = 0
         self.score = 0
 
-        self._prv_height = 0
-
         self.next_state(0)
 
     def next_state(self, shape_code):
@@ -52,8 +46,6 @@ class TetrisModel:
         self.current_shape_code = shape_code
         self.current_rotate = 0
         self.current_score = 0
-
-        self.current_append_height = 0
 
     def get_board_data(self):
         return self.board[:]
@@ -114,9 +106,6 @@ class TetrisModel:
 
     def update_board(self):
         self.board, removed_lines, filled_lines, append_lines = self.get_removed_board(self.board)
-
-        self.current_append_height = self._prv_height - append_lines
-        self._prv_height = append_lines
 
         if filled_lines == self._board_height:
             self.is_end = True

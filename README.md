@@ -43,19 +43,37 @@ pip3 install tensorflow-gpu
 ```
 
 ### Start Application
-Machine Learning (1 time)
+#### I. Start Application
+1 time
 ```
 python Train.py
 ```
 
-Machine Learning (Several times)
+Several times
 ```
 python Display.py
 ```
 
+#### II. Set UI Display
+Display
+```
+(Enter) or YES
+```
+
+CLI
+```
+NO
+```
+
+#### III. Set Learning Environmnet
 Play
 ```
-python Demo.py
+HUMAN
+```
+
+Machine Learning
+```
+(Enter) or AI
 ```
 
 ## Author

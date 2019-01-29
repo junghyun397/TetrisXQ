@@ -46,11 +46,13 @@ pip3 install tensorflow-gpu
 Train
 ```
 python Train.py
+python3 Train.py
 ```
 
 Game
 ```
 python Display.py
+python3 Display.py
 ```
 
 ## Author

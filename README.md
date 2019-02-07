@@ -55,5 +55,11 @@ python Display.py
 python3 Display.py
 ```
 
+Game with trained Model
+```
+python Demo.py
+python3 Demo.py
+```
+
 ## Author
  * [junghyun397](https://github.com/junghyun397) - *init*

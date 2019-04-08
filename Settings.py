@@ -20,3 +20,5 @@ class Settings:
 
         self.BATCH_SIZE = 100
         self.MAX_MEMORY = 500
+
+        self.REWARD_MODE = "BY_DIFF_BOARD"

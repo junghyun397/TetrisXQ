@@ -27,6 +27,20 @@ class EnvironmentModel(metaclass=ABCMeta):
         self._action_count = 0
         self._action_correction_weight = 0
 
+        if settings.REWARD_MODE == "BY_ZERO_SCORE":
+            def new_rwd():
+                reward = 0
+
+                if self.tetris_model.current_score == 0:
+                    reward = 1
+
+                self._action_correction_weight = 0
+
+                if self.tetris_model.is_end:
+                    reward = 100
+                return reward
+            self.get_reward = new_rwd
+
     def action_and_reward(self, action):
         self.tetris_model.next_state(action)
         self.do_action()
@@ -57,7 +71,7 @@ class EnvironmentModel(metaclass=ABCMeta):
         self._prv_roof = roof
 
         if self.tetris_model.is_end:
-            reward = 2000
+            reward = 100
         return reward
 
     def _action_correction(self, action):

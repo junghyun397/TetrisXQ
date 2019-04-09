@@ -1,29 +1,16 @@
-from agent.EnvironmentModel import EnvironmentModel
 from tetris.Tetromino import Tetromino
+from tetris.ai.Weight import Weight
 
 
-class Weight:
+class TetrisAI:
 
-    def __init__(self):
-        self.WEIGHT_FULL = 20
-        self.WEIGHT_FLAT = 2
-
-        self.WEIGHT_POST_SIDE = 2
-        self.WEIGHT_POST_FLOOR = 2
-
-        self.WEIGHT_HEIGHT = -1
-        self.WEIGHT_DEEP_HOLE = -3
-        self.WEIGHT_ROOF = -6
-
-
-class TetrisAI(EnvironmentModel):
-
-    def __init__(self, settings, graphic_module):
-        super().__init__(settings, graphic_module)
-
+    def __init__(self, settings, tetris_model):
         self._base_weight = Weight()
         self._opt_weight = Weight()
         self._weight = Weight()
+
+        self.board_height = settings.GRID_HEIGHT
+        self.board_width = settings.GRID_WIDTH
 
         self._opt_weight.WEIGHT_FULL = 50
         self._opt_weight.WEIGHT_POST_FLOOR = 5
@@ -31,22 +18,21 @@ class TetrisAI(EnvironmentModel):
         self._opt_weight.WEIGHT_DEEP_HOLE = -0.1
         self._opt_weight.WEIGHT_ROOF = -0.1
 
-        self._prv_block = -1
-        self._prv_block_count = 0
+        self.i_tetris_model = tetris_model
 
-        self._is_opt_mode = False
-
-    def do_action(self):
+    def get_evaluated_states(self):
         max_score = -999999999
-        chosen_state = None
+        max_state = None
 
-        _, d_height, d_deep_hole, d_roof = self.tetris_model.analysis_board(self.tetris_model.board)
-        self._update_policy(self.tetris_model.current_shape_code)
+        low_score = 999999999
+        low_state = None
 
-        states = self._get_state_list()
+        _, d_height, d_deep_hole, d_roof = self.i_tetris_model.analysis_board(self.i_tetris_model.board)
+
+        states = self.get_state_list()
         for index in range(len(states)):
             board, _, _, _, post_side, post_floor = states[index]
-            full, height, deep_hole, roof = self.tetris_model.analysis_board(board)
+            full, height, deep_hole, roof = self.i_tetris_model.analysis_board(board)
 
             score = 0
 
@@ -63,42 +49,34 @@ class TetrisAI(EnvironmentModel):
 
             if score > max_score:
                 max_score = score
-                chosen_state = states[index]
+                max_state = states[index]
 
-        if chosen_state is None:
-            self.tetris_model.is_end = True
-            self.graphic_module.draw_graphic(-1, -1)
-        else:
-            _, y, x, rotate, _, _ = chosen_state
-            self.tetris_model.rotate_block_rate(y, x, rotate)
-            self.graphic_module.draw_graphic(y, x)
-            self.tetris_model.sum_tetromino(y, x)
+            if score < low_score:
+                low_score = score
+                low_state = states[index]
 
-        self.graphic_module.pump_event()
+        return max_state, low_state
 
-    def _get_state_list(self):
+    def get_state_list(self):
         states = dict()
 
         num_index = 0
-        rotate_count = Tetromino.get_rotate_count(self.tetris_model.current_shape_code) + 1
+        rotate_count = Tetromino.get_rotate_count(self.i_tetris_model.current_shape_code) + 1
         for rotate_rate in range(rotate_count):
             for x in range(self.board_width):
-                if self.tetris_model.rotate_block_rate(0, x, rotate_rate):
+                if self.i_tetris_model.rotate_block_rate(0, x, rotate_rate):
                     dy = 0
-                    while self.tetris_model.can_move_block(dy + 1, x):
+                    while self.i_tetris_model.can_move_block(dy + 1, x):
                         dy += 1
 
                     def check_pos(fy, fx):
-                        if fy >= self.board_height or fx >= self.board_width or fx < 0 or self.tetris_model.get_board(
-                                fy, fx) == 1:
-                            return True
-                        return False
+                        return fy >= self.board_height or fx >= self.board_width or fx < 0 or self.i_tetris_model.get_board(fy, fx) == 1
 
                     post_floor = 0
                     post_side = 0
-                    for col in range(len(self.tetris_model.current_tetromino)):
-                        for row in range(len(self.tetris_model.current_tetromino[0])):
-                            if self.tetris_model.current_tetromino[col][row] == 1:
+                    for col in range(len(self.i_tetris_model.current_tetromino)):
+                        for row in range(len(self.i_tetris_model.current_tetromino[0])):
+                            if self.i_tetris_model.current_tetromino[col][row] == 1:
                                 if check_pos(dy + col, x + row - 1):
                                     post_side += 1
                                 if check_pos(dy + col, x + row + 1):
@@ -106,19 +84,6 @@ class TetrisAI(EnvironmentModel):
                                 if check_pos(dy + col + 1, x + row):
                                     post_floor += 1
 
-                    states[num_index] = self.tetris_model.get_sum_tetromino_board(dy, x), dy, x, rotate_rate, post_side, post_floor
+                    states[num_index] = self.i_tetris_model.get_sum_tetromino_board(dy, x), dy, x, rotate_rate, post_side, post_floor
                     num_index += 1
         return states
-
-    def _update_policy(self, block):
-        if block == self._prv_block:
-            self._prv_block_count += 1
-            if self._prv_block_count > 3:
-                self._weight = self._opt_weight
-                self._is_opt_mode = True
-        else:
-            self._prv_block_count = 0
-            if self._is_opt_mode:
-                self._weight = self._base_weight
-                self._is_opt_mode = False
-        self._prv_block = block

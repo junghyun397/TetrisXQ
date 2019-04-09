@@ -11,7 +11,7 @@ from agent.model.QMLPModel import QMLPModel
 from display.DummyGraphicModule import DummyGraphicModule
 from display.GraphicModule import GraphicModule
 from display.HumanPlayer import HumanPlayer
-from tetris.ai.TetrisAI import TetrisAI
+from tetris.ai.TetrisAIPlayer import TetrisAIPlayer
 
 SAVE_POINT = 20
 USE_GRAPHIC_INTERFACE = True
@@ -41,7 +41,7 @@ def main(_):
         if ENVIRONMENT_TYPE == 'HUMAN':
             env_model = HumanPlayer(settings, graphic_interface)
         else:
-            env_model = TetrisAI(settings, graphic_interface)
+            env_model = TetrisAIPlayer(settings, graphic_interface)
 
         train_step = 0
         merged_summary = tf.summary.merge_all()

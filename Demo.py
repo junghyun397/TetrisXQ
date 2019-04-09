@@ -7,7 +7,7 @@ from agent.model.QMLPModel import QMLPModel
 from display.DummyGraphicModule import DummyGraphicModule
 from display.GraphicModule import GraphicModule
 from display.HumanPlayer import HumanPlayer
-from tetris.ai.TetrisAI import TetrisAI
+from tetris.ai.TetrisAIPlayer import TetrisAIPlayer
 
 USE_GRAPHIC_INTERFACE = True
 ENVIRONMENT_TYPE = "HUMAN"
@@ -26,7 +26,7 @@ def main(_):
         if ENVIRONMENT_TYPE == "HUMAN":
             env_model = HumanPlayer(settings, graphic_module)
         else:
-            env_model = TetrisAI(settings, graphic_module)
+            env_model = TetrisAIPlayer(settings, graphic_module)
 
         saver = tf.train.import_meta_graph("train/saved_model/saved_model_TetrisXQ.ckpt.meta")
         saver.restore(sess, tf.train.latest_checkpoint('./train/saved_model/'))

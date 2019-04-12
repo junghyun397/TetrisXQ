@@ -1,3 +1,5 @@
+from agent.model.RewardType import RewardType
+
 
 class Settings:
 
@@ -19,6 +21,6 @@ class Settings:
         self.LEARNING_LATE = 0.2
 
         self.BATCH_SIZE = 100
-        self.MAX_MEMORY = 500
+        self.MAX_MEMORY = 1000
 
-        self.REWARD_MODE = "BY_DIFF_BOARD"
+        self.REWARD_MODE = RewardType.BY_SUM_TURNS

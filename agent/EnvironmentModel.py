@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 import numpy as np
 
+from agent.model.RewardType import RewardType
 from tetris.TetrisModel import TetrisModel
 
 
@@ -27,7 +28,30 @@ class EnvironmentModel(metaclass=ABCMeta):
         self._action_count = 0
         self._action_correction_weight = 0
 
-        if settings.REWARD_MODE == "BY_ZERO_SCORE":
+        self._max_turn = 0
+
+        if settings.REWARD_MODE == RewardType.BY_ANALYSE_BOARD:
+            def new_rwd():
+                reward = -1
+                reward += -0.01 * self.tetris_model.current_score
+                reward += -0.01 * self.tetris_model.turns
+
+                _, height, deep_hole, roof = self.tetris_model.analysis_board(self.tetris_model.board)
+                reward += 2 * max(0, height - self._prv_height)
+                reward += 5 * max(0, deep_hole - self._prv_deep_hole)
+                reward += 5 * max(0, roof - self._prv_roof)
+                reward += self._action_correction_weight
+
+                self._action_correction_weight = 0
+                self._prv_height = height
+                self._prv_deep_hole = deep_hole
+                self._prv_roof = roof
+
+                if self.tetris_model.is_end:
+                    reward = 100
+                return reward
+            self.get_reward = new_rwd
+        elif settings.REWARD_MODE == RewardType.BY_ZERO_SCORE:
             def new_rwd():
                 reward = 0
 
@@ -38,6 +62,17 @@ class EnvironmentModel(metaclass=ABCMeta):
 
                 if self.tetris_model.is_end:
                     reward = 100
+                return reward
+            self.get_reward = new_rwd
+        elif settings.REWARD_MODE == RewardType.BY_SUM_TURNS:
+            def new_rwd():
+
+                if self._max_turn < self.tetris_model.turns:
+                    reward = (self.tetris_model.turns - self._max_turn) * 15
+                    self._max_turn = self.tetris_model.turns
+                else:
+                    reward = (self.tetris_model.turns / self._max_turn) * 100
+
                 return reward
             self.get_reward = new_rwd
 
@@ -54,25 +89,9 @@ class EnvironmentModel(metaclass=ABCMeta):
     def get_current_state(self):
         return np.reshape(self.tetris_model.get_board_data(), (1, self._states))
 
+    # noinspection PyMethodMayBeStatic
     def get_reward(self):
-        reward = -1
-        reward += -0.01 * self.tetris_model.current_score
-        reward += -0.01 * self.tetris_model.turns
-
-        _, height, deep_hole, roof = self.tetris_model.analysis_board(self.tetris_model.board)
-        reward += 2 * max(0, height - self._prv_height)
-        reward += 5 * max(0, deep_hole - self._prv_deep_hole)
-        reward += 5 * max(0, roof - self._prv_roof)
-        reward += self._action_correction_weight
-
-        self._action_correction_weight = 0
-        self._prv_height = height
-        self._prv_deep_hole = deep_hole
-        self._prv_roof = roof
-
-        if self.tetris_model.is_end:
-            reward = 100
-        return reward
+        return 0
 
     def _action_correction(self, action):
         if self._prv_action == action:

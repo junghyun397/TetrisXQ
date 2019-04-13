@@ -3,7 +3,7 @@
 ![](https://img.shields.io/badge/python-3.6-blue.svg)
 ![](https://img.shields.io/badge/tensorflow-1.6%20or%20higher-orange.svg)
 
-Welcome to 'The most difficult Tetris's World' implemented with DQN.
+Welcome to 'The most difficult Tetris' implemented with Reinforcement Learning.
 
 ## Getting Started
 ### Install Modules

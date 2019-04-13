@@ -1,4 +1,4 @@
-from agent.model.RewardType import RewardType
+from environment.RewardType import RewardType
 
 
 class Settings:

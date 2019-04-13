@@ -1,13 +1,13 @@
 import numpy as np
 import tensorflow as tf
 
-import Train
+import TrainDQN
 from Settings import Settings
-from agent.model.QMLPModel import QMLPModel
-from display.DummyGraphicModule import DummyGraphicModule
-from display.GraphicModule import GraphicModule
-from display.HumanPlayer import HumanPlayer
-from tetris.ai.TetrisAIPlayer import TetrisAIPlayer
+from agent.dqn.QMLPModel import QMLPModel
+from environment.player.HumanPlayer import HumanPlayer
+from environment.player.TetrisAIPlayer import TetrisAIPlayer
+from graphics.DummyGraphicModule import DummyGraphicModule
+from graphics.GraphicModule import GraphicModule
 
 USE_GRAPHIC_INTERFACE = True
 ENVIRONMENT_TYPE = "HUMAN"
@@ -17,7 +17,7 @@ def main(_):
     settings = Settings()
 
     with tf.Session() as sess:
-        train_info = Train.TrainInfo(settings)
+        train_info = TrainDQN.TrainInfo(settings)
 
         q_network_model = QMLPModel(settings)
         graphic_module = DummyGraphicModule()

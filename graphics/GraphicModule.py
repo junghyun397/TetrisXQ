@@ -2,9 +2,9 @@ import numpy as np
 import pygame as pygame
 from pygame.rect import Rect
 
-from display.GraphicInterface import GraphicInterface
+from graphics.GraphicInterface import GraphicInterface
 
-DISPLAY_FPS = 30
+DISPLAY_FPS = 120
 
 BLOCK_SIZE = 30
 LINE_SIZE = round(BLOCK_SIZE / 10)

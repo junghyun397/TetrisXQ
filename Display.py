@@ -1,12 +1,12 @@
 import random
 
 from Settings import Settings
-from Train import TrainInfo
-from display.DummyGraphicModule import DummyGraphicModule
-from display.GraphicModule import GraphicModule
-from display.HumanPlayer import HumanPlayer
+from TrainDQN import TrainInfo
+from environment.player.HumanPlayer import HumanPlayer
+from environment.player.TetrisAIPlayer import TetrisAIPlayer
+from graphics.DummyGraphicModule import DummyGraphicModule
+from graphics.GraphicModule import GraphicModule
 from tetris.ai.TetrisAI import TetrisAI
-from tetris.ai.TetrisAIPlayer import TetrisAIPlayer
 
 settings = Settings()
 train_info = TrainInfo(settings)

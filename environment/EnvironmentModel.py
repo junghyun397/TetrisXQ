@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 import numpy as np
 
-from agent.model.RewardType import RewardType
+from environment.RewardType import RewardType
 from tetris.TetrisModel import TetrisModel
 
 

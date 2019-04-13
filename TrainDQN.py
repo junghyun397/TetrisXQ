@@ -6,23 +6,17 @@ import numpy as np
 import tensorflow as tf
 
 from Settings import Settings
-from agent.data.BatchManager import BatchManager
-from agent.model.QMLPModel import QMLPModel
-from display.DummyGraphicModule import DummyGraphicModule
-from display.GraphicModule import GraphicModule
-from display.HumanPlayer import HumanPlayer
-from tetris.ai.TetrisAIPlayer import TetrisAIPlayer
+from TrainInfo import TrainInfo
+from agent.dqn.QMLPModel import QMLPModel
+from agent.dqn.data.BatchManager import BatchManager
+from environment.player.HumanPlayer import HumanPlayer
+from environment.player.TetrisAIPlayer import TetrisAIPlayer
+from graphics.DummyGraphicModule import DummyGraphicModule
+from graphics.GraphicModule import GraphicModule
 
 SAVE_POINT = 20
 USE_GRAPHIC_INTERFACE = True
 ENVIRONMENT_TYPE = 'AI'
-
-
-class TrainInfo:
-
-    def __init__(self, settings):
-        self.current_epoch = 0
-        self.total_epoch = settings.LEARNING_EPOCH
 
 
 def main(_):
@@ -84,7 +78,7 @@ def main(_):
                   " 진행 턴 수: " + str(env_model.tetris_model.turns) + " 무작위 행동: " + str(round(epsilon * 100)))
 
             if train_info.current_epoch % SAVE_POINT == 0:
-                print("모델 저장됨: " + tf.train.Saver().save(sess, os.getcwd() + "./train/saved_model/saved_model_TetrisXQ.ckpt"))
+                print("모델 저장됨: " + tf.train.Saver().save(sess, os.getcwd() + "./train/saved_model/saved_model_DQN_TetrisXQ.ckpt"))
 
         writer.close()
         print("훈련 종료: " + str(settings.LEARNING_EPOCH) + " 게임 학습 완료")

@@ -1,4 +1,4 @@
-from display.GraphicInterface import GraphicInterface
+from graphics.GraphicInterface import GraphicInterface
 
 
 class DummyGraphicModule(GraphicInterface):

@@ -1,13 +1,13 @@
 from tetris.Tetromino import Tetromino
-from tetris.ai.Weight import Weight
+from tetris.ai.TetrisWeight import TetrisWeight
 
 
 class TetrisAI:
 
     def __init__(self, settings, tetris_model):
-        self._base_weight = Weight()
-        self._opt_weight = Weight()
-        self._weight = Weight()
+        self._base_weight = TetrisWeight()
+        self._opt_weight = TetrisWeight()
+        self._weight = TetrisWeight()
 
         self.board_height = settings.GRID_HEIGHT
         self.board_width = settings.GRID_WIDTH

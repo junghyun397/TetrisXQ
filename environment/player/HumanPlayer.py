@@ -2,7 +2,7 @@ import time
 
 import pygame as pygame
 
-from agent.EnvironmentModel import EnvironmentModel
+from environment.EnvironmentModel import EnvironmentModel
 
 FORCE_DOWN_TIME = 0.5
 FORCE_SET_TIME = 1

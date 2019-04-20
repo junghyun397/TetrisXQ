@@ -1,23 +1,19 @@
 from environment.EnvironmentModel import EnvironmentModel
+from environment.reward.AnalyseBoardReward import AnalyseBoardReward
+from graphics.DummyGraphicModule import DummyGraphicModule
 from tetris.ai.TetrisAI import TetrisAI
 from tetris.ai.TetrisWeight import TetrisWeight
 
 
-class TetrisAIPlayer(EnvironmentModel, TetrisAI):
+class TetrisAIEnvironment(EnvironmentModel, TetrisAI):
 
-    def __init__(self, settings, graphic_module):
-        EnvironmentModel.__init__(self, settings, graphic_module)
+    def __init__(self, settings, graphic_module=DummyGraphicModule(), reward_module=AnalyseBoardReward()):
+        EnvironmentModel.__init__(self, settings, graphic_module, reward_module)
         TetrisAI.__init__(self, settings, self.tetris_model)
 
         self._base_weight = TetrisWeight()
-        self._opt_weight = TetrisWeight()
         self._weight = TetrisWeight()
-
-        self._opt_weight.WEIGHT_FULL = 50
-        self._opt_weight.WEIGHT_POST_FLOOR = 5
-        self._opt_weight.WEIGHT_HEIGHT = -10
-        self._opt_weight.WEIGHT_DEEP_HOLE = -0.1
-        self._opt_weight.WEIGHT_ROOF = -0.1
+        self._opt_weight = TetrisWeight(weight_full=50, weight_post_floor=5, weight_height=-10, weight_deep_hole=-0.1, weight_roof=-0.1)
 
         self._prv_block = -1
         self._prv_block_count = 0

@@ -3,16 +3,18 @@ import time
 import pygame as pygame
 
 from environment.EnvironmentModel import EnvironmentModel
+from environment.reward.AnalyseBoardReward import AnalyseBoardReward
+from graphics.DummyGraphicModule import DummyGraphicModule
 
 FORCE_DOWN_TIME = 0.5
 FORCE_SET_TIME = 1
 KEY_CHAIN_TIME = 0.15
 
 
-class HumanPlayer(EnvironmentModel):
+class ManualPlayer(EnvironmentModel):
 
-    def __init__(self, settings, graphic_module):
-        super().__init__(settings, graphic_module)
+    def __init__(self, settings, graphic_module=DummyGraphicModule(), reward_module=AnalyseBoardReward()):
+        super().__init__(settings, graphic_module, reward_module)
 
         self._current_y = 0
         self._current_x = 0

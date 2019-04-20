@@ -4,7 +4,7 @@ from pygame.rect import Rect
 
 from graphics.GraphicInterface import GraphicInterface
 
-DISPLAY_FPS = 120
+DISPLAY_FPS = 1200
 
 BLOCK_SIZE = 30
 LINE_SIZE = round(BLOCK_SIZE / 10)
@@ -19,9 +19,7 @@ COLOR_BLOCK = [(176, 190, 197), (183, 28, 28), (74, 20, 140), (26, 35, 126), (13
 
 class GraphicModule(GraphicInterface):
 
-    def __init__(self, settings, train_info):
-
-        self._train_info = train_info
+    def __init__(self, settings):
 
         self._board_height = settings.GRID_HEIGHT
         self._board_width = settings.GRID_WIDTH
@@ -74,7 +72,6 @@ class GraphicModule(GraphicInterface):
                          0)
 
         self._draw_score_info()
-        self._draw_train_info()
 
         self._interface_board = np.reshape(self.tetris_model.get_board_data(), (self._board_height, self._board_width))
 
@@ -91,12 +88,6 @@ class GraphicModule(GraphicInterface):
     def _draw_score_info(self):
         text_obj = self._font_obj.render("Score: " + str(round(self.tetris_model.score)), True, COLOR_BLACK)
         self._screen.blit(text_obj, (self._screen_width - 300, BLOCK_SIZE))
-
-    def _draw_train_info(self):
-        if self._train_info is not None:
-            text_obj = self._font_obj.render("Epoch: " + str(self._train_info.current_epoch) +
-                                             "/" + str(self._train_info.total_epoch), True, COLOR_BLACK)
-            self._screen.blit(text_obj, (self._screen_width - 300, BLOCK_SIZE * 3))
 
     # Board Draw
 

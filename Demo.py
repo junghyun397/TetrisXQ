@@ -1,12 +1,10 @@
 import numpy as np
 import tensorflow as tf
 
-import TrainDQN
 from Settings import Settings
 from agent.dqn.QMLPModel import QMLPModel
-from environment.player.HumanPlayer import HumanPlayer
-from environment.player.TetrisAIPlayer import TetrisAIPlayer
-from graphics.DummyGraphicModule import DummyGraphicModule
+from environment.AutoPlayEnvironment import TetrisAIEnvironment
+from environment.ManualEnvironment import ManualPlayer
 from graphics.GraphicModule import GraphicModule
 
 USE_GRAPHIC_INTERFACE = True
@@ -17,16 +15,14 @@ def main(_):
     settings = Settings()
 
     with tf.Session() as sess:
-        train_info = TrainDQN.TrainInfo(settings)
 
         q_network_model = QMLPModel(settings)
-        graphic_module = DummyGraphicModule()
         if USE_GRAPHIC_INTERFACE:
-            graphic_module = GraphicModule(settings, train_info)
+            graphic_module = GraphicModule(settings)
         if ENVIRONMENT_TYPE == "HUMAN":
-            env_model = HumanPlayer(settings, graphic_module)
+            env_model = ManualPlayer(settings, graphic_module)
         else:
-            env_model = TetrisAIPlayer(settings, graphic_module)
+            env_model = TetrisAIEnvironment(settings, graphic_module)
 
         saver = tf.train.import_meta_graph("train/saved_model/saved_model_TetrisXQ.ckpt.meta")
         saver.restore(sess, tf.train.latest_checkpoint('./train/saved_model/'))

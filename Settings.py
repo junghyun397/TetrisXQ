@@ -1,5 +1,3 @@
-from environment.RewardType import RewardType
-
 
 class Settings:
 
@@ -22,5 +20,3 @@ class Settings:
 
         self.BATCH_SIZE = 100
         self.MAX_MEMORY = 1000
-
-        self.REWARD_MODE = RewardType.BY_SUM_TURNS

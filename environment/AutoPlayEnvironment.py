@@ -5,7 +5,7 @@ from tetris.ai.TetrisAI import TetrisAI
 from tetris.ai.TetrisWeight import TetrisWeight
 
 
-class TetrisAIEnvironment(EnvironmentModel, TetrisAI):
+class AutoPlayEnvironment(EnvironmentModel, TetrisAI):
 
     def __init__(self, settings, graphic_module=DummyGraphicModule(), reward_module=AnalyseBoardReward()):
         EnvironmentModel.__init__(self, settings, graphic_module, reward_module)

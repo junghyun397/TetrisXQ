@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import argparse
 import os
 import random
 
@@ -8,30 +9,43 @@ import tensorflow as tf
 from Settings import Settings
 from agent.dqn.QMLPModel import QMLPModel
 from agent.dqn.data.BatchManager import BatchManager
-from environment.AutoPlayEnvironment import TetrisAIEnvironment
-from environment.ManualEnvironment import ManualPlayer
+from environment.AutoPlayEnvironment import AutoPlayEnvironment
+from environment.ManualPlayEnvironment import ManualPlayer
 from graphics.DummyGraphicModule import DummyGraphicModule
 from graphics.GraphicModule import GraphicModule
 
 SAVE_POINT = 20
 
+LEARNING_EPOCH = 2000
+MAX_TURNS = 100000
 
-def main(args):
+START_EPSILON = 1
+MIN_EPSILON = 0.01
 
-    settings = Settings()
+parser = argparse.ArgumentParser()
+parser.add_argument("-e", "--env-type", help="Set environment type", type=str, default="auto")
+parser.add_argument("-g", "--use-graphic", help="Using graphic interface", type=bool, default=True)
+args = parser.parse_args()
 
-    epsilon = settings.START_EPSILON
+
+def main(_):
 
     with tf.Session() as sess:
+        settings = Settings()
+        epsilon = START_EPSILON
+
         q_network_model = QMLPModel(settings)
         batch_module = BatchManager(settings)
-        graphic_interface = DummyGraphicModule()
-        if args.use_graphic == "yes":
+
+        if args.use_graphic:
             graphic_interface = GraphicModule(settings)
-        if args.env_type == 'human':
+        else:
+            graphic_interface = DummyGraphicModule()
+
+        if args.env_type == "manual":
             env_model = ManualPlayer(settings, graphic_interface)
         else:
-            env_model = TetrisAIEnvironment(settings, graphic_interface)
+            env_model = AutoPlayEnvironment(settings, graphic_interface)
 
         train_step = 0
         merged_summary = tf.summary.merge_all()
@@ -39,15 +53,15 @@ def main(args):
 
         init = tf.global_variables_initializer()
         sess.run(init)
-        print("훈련 시작: " + str(settings.LEARNING_EPOCH) + " 게임 학습...")
-        for epoch in range(settings.LEARNING_EPOCH):
+        print("훈련 시작: " + str(LEARNING_EPOCH) + " 게임 학습...")
+        for epoch in range(LEARNING_EPOCH):
             turn_count = 0
             current_end = False
             current_state = env_model.get_current_state()
 
             while not current_end:
                 train_step += 1
-                if turn_count >= settings.MAX_TURNS:
+                if turn_count > MAX_TURNS:
                     break
 
                 if (float(random.randrange(0, 9999)) / 10000) <= epsilon:
@@ -56,7 +70,7 @@ def main(args):
                     q_values = q_network_model.get_forward(sess, current_state)[0]
                     action = np.argmax(q_values)
 
-                if epsilon > settings.MIN_EPSILON:
+                if epsilon > MIN_EPSILON:
                     epsilon = epsilon * 0.999
 
                 next_state, reward, next_end = env_model.action_and_reward(action)
@@ -77,7 +91,7 @@ def main(args):
                                                          os.getcwd() + "./train/saved_model/saved_model_DQN_TetrisXQ.ckpt"))
 
         writer.close()
-        print("훈련 종료: " + str(settings.LEARNING_EPOCH) + " 게임 학습 완료")
+        print("훈련 종료: " + str(LEARNING_EPOCH) + " 게임 학습 완료")
 
 
 if __name__ == '__main__':

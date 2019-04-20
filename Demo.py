@@ -1,28 +1,37 @@
+import argparse
+
 import numpy as np
 import tensorflow as tf
 
 from Settings import Settings
 from agent.dqn.QMLPModel import QMLPModel
-from environment.AutoPlayEnvironment import TetrisAIEnvironment
-from environment.ManualEnvironment import ManualPlayer
+from environment.AutoPlayEnvironment import AutoPlayEnvironment
+from environment.ManualPlayEnvironment import ManualPlayer
+from graphics.DummyGraphicModule import DummyGraphicModule
 from graphics.GraphicModule import GraphicModule
 
-USE_GRAPHIC_INTERFACE = True
-ENVIRONMENT_TYPE = "HUMAN"
+parser = argparse.ArgumentParser()
+parser.add_argument("-e", "--env-type", help="Set environment type", type=str, default="auto")
+parser.add_argument("-g", "--use-graphic", help="Using graphic interface", type=bool, default=True)
+args = parser.parse_args()
 
 
 def main(_):
-    settings = Settings()
 
     with tf.Session() as sess:
+        settings = Settings()
 
         q_network_model = QMLPModel(settings)
-        if USE_GRAPHIC_INTERFACE:
-            graphic_module = GraphicModule(settings)
-        if ENVIRONMENT_TYPE == "HUMAN":
-            env_model = ManualPlayer(settings, graphic_module)
+
+        if args.use_graphic:
+            graphic_interface = GraphicModule(settings)
         else:
-            env_model = TetrisAIEnvironment(settings, graphic_module)
+            graphic_interface = DummyGraphicModule()
+
+        if args.env_type == "manual":
+            env_model = ManualPlayer(settings, graphic_interface)
+        else:
+            env_model = AutoPlayEnvironment(settings, graphic_interface)
 
         saver = tf.train.import_meta_graph("train/saved_model/saved_model_TetrisXQ.ckpt.meta")
         saver.restore(sess, tf.train.latest_checkpoint('./train/saved_model/'))

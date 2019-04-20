@@ -5,12 +5,6 @@ class Settings:
         self.GRID_HEIGHT = 22
         self.GRID_WIDTH = 10
 
-        self.LEARNING_EPOCH = 2000
-        self.MAX_TURNS = 100000
-
-        self.START_EPSILON = 1
-        self.MIN_EPSILON = 0.01
-
         self.STATES = self.GRID_WIDTH * self.GRID_HEIGHT
         self.ACTIONS = 7
         self.HIDDEN_SIZE = 300

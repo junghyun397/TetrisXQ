@@ -47,12 +47,4 @@ def main(_):
 
 
 if __name__ == '__main__':
-    print("Use Graphic Interface: (YES/NO Enter=YES)")
-    if input().upper() == "NO":
-        USE_GRAPHIC_INTERFACE = False
-
-    print("Environment Type: (HUMAN/AI Enter=Human)")
-    if input().upper() == "AI":
-        ENVIRONMENT_TYPE = "AI"
-
     tf.app.run()

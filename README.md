@@ -6,20 +6,20 @@
 TetrisXQ - Reverse tetris Reinforcement Learning Environment and implementations(DQN).  
 Here's the Tetris that will probably annoy you the *most?*
 
-##*Calm down* and look around first
+## *Calm down* and look around first
 Feel a little bit about what's happening through Display.py
 <pre><code>
 python Display.py -e manual -g y # Playing the Tetris on Yourself
 python Display.py -e auto -g y  # Watch AI play with a blank stare
 </code></pre>
 
-##Training with DQN
+## Training with DQN
 Start training with a simple Deep-Q-Network.
 <pre><code>
 python Train.py -e auto -g y -c 2000  #  
 </code></pre>
 
-##It's your turn now!
+## It's your turn now!
 It is probably very similar to OpenAI-gym. Your job is simple: just create an environment and then action on it!  
 <pre><code>
 env = AutoPlayEnvironment(settings, graphic_interface)  # Call Auto play environment.

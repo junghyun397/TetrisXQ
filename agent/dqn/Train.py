@@ -25,6 +25,7 @@ MIN_EPSILON = 0.01
 parser = argparse.ArgumentParser()
 parser.add_argument("-e", "--env-type", help="Set environment type", type=str, default="auto")
 parser.add_argument("-g", "--use-graphic", help="Using graphic interface", type=bool, default=True)
+parser.add_argument("-c", "--count-epoch", help="Count of epochs", type=int, default=LEARNING_EPOCH)
 args = parser.parse_args()
 
 
@@ -33,6 +34,7 @@ def main(_):
     with tf.Session() as sess:
         settings = Settings()
         epsilon = START_EPSILON
+        total_epoch = args.count_epoch
 
         q_network_model = QMLPModel(settings)
         batch_module = BatchManager(settings)
@@ -53,8 +55,8 @@ def main(_):
 
         init = tf.global_variables_initializer()
         sess.run(init)
-        print("Start training: " + str(LEARNING_EPOCH) + " epoch...")
-        for epoch in range(LEARNING_EPOCH):
+        print("Start training: " + str(total_epoch) + " epoch...")
+        for epoch in range(total_epoch):
             turn_count = 0
             current_end = False
             current_state = env_model.get_current_state()
@@ -91,7 +93,7 @@ def main(_):
                                                          os.getcwd() + "./train/saved_model/saved_model_DQN_TetrisXQ.ckpt"))
 
         writer.close()
-        print("training finished: " + str(LEARNING_EPOCH) + "games.")
+        print("training finished: " + str(total_epoch) + "games.")
 
 
 if __name__ == '__main__':

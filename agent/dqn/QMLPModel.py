@@ -7,18 +7,23 @@ from agent.DeepNetworkModel import DeepNetworkModel
 
 class QMLPModel(DeepNetworkModel):
 
-    def __init__(self, settings):
-        self._build_model(settings)
-        self._build_optimizer(settings)
+    def __init__(self, settings,
+                 hidden_size=300,
+                 discount=0.8,
+                 learning_rate=0.05):
+        self._hidden_size = hidden_size
+        self._discount = discount
+        self._learning_rate = learning_rate
+
+        self._states = settings.STATES
+        self._actions = settings.ACTIONS
+
+        self._build_model()
+        self._build_optimizer()
 
     # Model Builder
 
-    def _build_model(self, settings):
-        self._states = settings.STATES
-        self._actions = settings.ACTIONS
-        self._hidden_size = settings.HIDDEN_SIZE
-
-        self._discount = settings.DISCOUNT
+    def _build_model(self):
 
         self.X = tf.placeholder(tf.float32, [None, self._states])
         self.Y = tf.placeholder(tf.float32, [None, self._actions])
@@ -51,12 +56,12 @@ class QMLPModel(DeepNetworkModel):
             self.output_layer = tf.matmul(hidden_layer_3, W4) + b4
             tf.summary.histogram("layer_4_weight", W4)
 
-    def _build_optimizer(self, settings):
+    def _build_optimizer(self):
         with tf.name_scope("cost"):
             self.cost = tf.losses.mean_squared_error(self.Y, self.output_layer)
             tf.summary.scalar("cost", self.cost)
         with tf.name_scope("train"):
-            self.optimizer = tf.train.AdamOptimizer(settings.LEARNING_LATE).minimize(self.cost)
+            self.optimizer = tf.train.AdamOptimizer(self._learning_rate).minimize(self.cost)
 
     # Model Function
 

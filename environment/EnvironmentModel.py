@@ -21,7 +21,7 @@ class EnvironmentModel(metaclass=ABCMeta):
 
         self.end_point = 0
 
-    def action_and_reward(self, action):
+    def action(self, action) -> (np.ndarray, float, bool):
         self.tetris_model.next_state(action)
         self.do_action()
         return self.get_current_state(), self.reward_module.get_reward(self.tetris_model), self.tetris_model.is_end

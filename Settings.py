@@ -1,16 +1,17 @@
-
 class Settings:
 
-    def __init__(self):
-        self.GRID_HEIGHT = 22
-        self.GRID_WIDTH = 10
+    def __init__(self, grid_height=22,
+                 grid_width=10,
+                 actions=7,
+                 hidden_size=300,
+                 discount=0.8,
+                 learning_rate=0.2):
+        self.GRID_HEIGHT = grid_height
+        self.GRID_WIDTH = grid_width
 
         self.STATES = self.GRID_WIDTH * self.GRID_HEIGHT
-        self.ACTIONS = 7
-        self.HIDDEN_SIZE = 300
+        self.ACTIONS = actions
+        self.HIDDEN_SIZE = hidden_size
 
-        self.DISCOUNT = 0.8
-        self.LEARNING_LATE = 0.2
-
-        self.BATCH_SIZE = 100
-        self.MAX_MEMORY = 1000
+        self.DISCOUNT = discount
+        self.LEARNING_LATE = learning_rate

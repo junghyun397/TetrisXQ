@@ -37,7 +37,7 @@ if __name__ == '__main__':
     turns = 0
     while True:
         turns += 1
-        _, _, end = env_model.action_and_reward(TETROMINO_AGENT())
+        _, _, end = env_model.action(TETROMINO_AGENT())
         if end:
             print("Turns: " + str(turns))
             turns = 0

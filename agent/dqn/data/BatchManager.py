@@ -5,12 +5,14 @@ import numpy as np
 
 class BatchManager:
 
-    def __init__(self, settings):
+    def __init__(self, settings,
+                 batch_size=100,
+                 max_memory=1000):
         self._action = settings.ACTIONS
         self._states = settings.STATES
 
-        self._max_memory = settings.MAX_MEMORY
-        self._batch_size = settings.BATCH_SIZE
+        self._batch_size = batch_size
+        self._max_memory = max_memory
 
         self._current_state = np.empty((self._max_memory, self._states), dtype=np.float32)
         self._next_state = np.empty((self._max_memory, self._states), dtype=np.float32)
@@ -38,7 +40,6 @@ class BatchManager:
         targets = np.zeros((chosen_batch_size, self._action))
 
         for index in range(chosen_batch_size):
-
             random_index = random.randrange(0, self._length)
 
             current_state = self._current_state[random_index].reshape(1, self._states)

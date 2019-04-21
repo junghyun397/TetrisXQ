@@ -1,5 +1,3 @@
-import numpy as np
-
 from tetris.Tetromino import Tetromino
 
 
@@ -120,7 +118,7 @@ class TetrisModel:
         board = board[:]
 
         for index in range(self._board_height):
-            line_sum = np.sum(board[index * self._board_width:(index + 1) * self._board_width])
+            line_sum = sum(board[index * self._board_width:(index + 1) * self._board_width])
             if line_sum == self._board_width:
                 n_board = board[:]
                 for z_index in range(self._board_width):

@@ -43,7 +43,7 @@ def main(_):
         while True:
             q_values = q_network_model.get_forward(sess, current_state)[0]
             action = np.argmax(q_values)
-            current_state, _, _ = env_model.action_and_reward(action)
+            current_state, _, _ = env_model.action(action)
 
 
 if __name__ == '__main__':

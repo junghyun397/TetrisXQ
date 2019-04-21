@@ -53,7 +53,7 @@ def main(_):
 
         init = tf.global_variables_initializer()
         sess.run(init)
-        print("훈련 시작: " + str(LEARNING_EPOCH) + " 게임 학습...")
+        print("Start training: " + str(LEARNING_EPOCH) + " epoch...")
         for epoch in range(LEARNING_EPOCH):
             turn_count = 0
             current_end = False
@@ -73,7 +73,7 @@ def main(_):
                 if epsilon > MIN_EPSILON:
                     epsilon = epsilon * 0.999
 
-                next_state, reward, next_end = env_model.action_and_reward(action)
+                next_state, reward, next_end = env_model.action(action)
                 batch_module.add_data(current_state, next_state, action, reward)
 
                 current_state = next_state
@@ -82,16 +82,16 @@ def main(_):
                 input_state, target_values = batch_module.get_batch(sess, q_network_model.get_target_value)
                 summary, cost = q_network_model.optimize_step(sess, input_state, target_values, merged_summary)
                 writer.add_summary(summary, train_step)
-            print("epoch: " + str(epoch) + " 전체 step: " + str(train_step) + " 총 점수: " + str(
+            print("epoch: " + str(epoch) + " global step: " + str(train_step) + " score: " + str(
                 round(env_model.tetris_model.score)) +
-                  " 진행 턴 수: " + str(env_model.tetris_model.turns) + " 무작위 행동: " + str(round(epsilon * 100)))
+                  " process turns: " + str(env_model.tetris_model.turns) + " exploration: " + str(round(epsilon * 100)))
 
             if epoch % SAVE_POINT == 0:
-                print("모델 저장됨: " + tf.train.Saver().save(sess,
+                print("Model saved: " + tf.train.Saver().save(sess,
                                                          os.getcwd() + "./train/saved_model/saved_model_DQN_TetrisXQ.ckpt"))
 
         writer.close()
-        print("훈련 종료: " + str(LEARNING_EPOCH) + " 게임 학습 완료")
+        print("training finished: " + str(LEARNING_EPOCH) + "games.")
 
 
 if __name__ == '__main__':

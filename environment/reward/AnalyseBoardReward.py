@@ -4,6 +4,7 @@ from environment.reward.RewardModule import RewardModule
 class AnalyseBoardReward(RewardModule):
 
     def __init__(self):
+        super().__init__()
         self._prv_height = 0
         self._prv_deep_hole = 0
         self._prv_roof = 0
@@ -23,5 +24,11 @@ class AnalyseBoardReward(RewardModule):
         self._prv_roof = roof
 
         if tetris_model.is_end:
+            self._reset_prv_info()
             reward = 100
         return reward
+
+    def _reset_prv_info(self):
+        self._prv_height = 0
+        self._prv_deep_hole = 0
+        self._prv_roof = 0

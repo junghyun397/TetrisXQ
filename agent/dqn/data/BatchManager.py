@@ -2,10 +2,12 @@ import random
 
 import numpy as np
 
+from Settings import Settings
+
 
 class BatchManager:
 
-    def __init__(self, settings,
+    def __init__(self, settings=Settings(),
                  batch_size=100,
                  max_memory=1000):
         self._action = settings.ACTIONS

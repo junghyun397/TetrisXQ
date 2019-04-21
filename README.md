@@ -16,7 +16,7 @@ python Display.py -e auto -g y  # Watch AI play with a blank stare
 ## Training with DQN
 Start training with a simple Deep-Q-Network.
 <pre><code>
-python Train.py -e auto -g y -c 2000  #  
+python Train.py -e auto -g y -c 2000  # Learn 2000 games with auto play.
 </code></pre>
 
 ## It's your turn now!
@@ -27,6 +27,6 @@ state, reward, end = env.action(TETROMINO_AGENT())  # Action!
 </code></pre>
 If you want to play and train ***yourself***, following this:
 <pre><code>
-env = ManualPlayEnvironment(settings, graphic_interface)  # Call Auto play environment.
+env = ManualPlayEnvironment(settings, graphic_interface)  # Call Manual play environment.
 state, reward, end = env.action(TETROMINO_AGENT())  # Action!
 </code></pre>

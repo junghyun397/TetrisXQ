@@ -2,12 +2,13 @@ import math
 import numpy as np
 import tensorflow as tf
 
+from Settings import Settings
 from agent.DeepNetworkModel import DeepNetworkModel
 
 
 class QMLPModel(DeepNetworkModel):
 
-    def __init__(self, settings,
+    def __init__(self, settings=Settings(),
                  hidden_size=300,
                  discount=0.8,
                  learning_rate=0.05):

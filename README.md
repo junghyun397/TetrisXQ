@@ -10,7 +10,7 @@ Here's the Tetris that will probably annoy you the *most?*
 Feel a little bit about what's happening through Display.py
 <pre><code>
 python Display.py -e manual -g y # Playing the Tetris on Yourself
-python Display.py -e auto -g y  # Watch AI play with a blank stare
+python Display.py -e auto -g y  # Watch AI play
 </code></pre>
 
 ## Training with DQN
@@ -22,11 +22,11 @@ python Train.py -e auto -g y -c 2000  # Learn 2000 games with auto play.
 ## It's your turn now!
 It is probably very similar to OpenAI-gym. Your job is simple: just create an environment and then action on it!  
 <pre><code>
-env = AutoPlayEnvironment(settings, graphic_interface)  # Call Auto play environment.
-state, reward, end = env.action(TETROMINO_AGENT())  # Action!
+env = AutoPlayEnvironment()  # Call Auto(Tetris AI) play environment.
+state, reward, end = env.action(an_action)  # Action!
 </code></pre>
 If you want to play and train ***yourself***, following this:
 <pre><code>
-env = ManualPlayEnvironment(settings, graphic_interface)  # Call Manual play environment.
-state, reward, end = env.action(TETROMINO_AGENT())  # Action!
+env = ManualPlayEnvironment()  # Call Manual play environment.
+state, reward, end = env.action(an_action)  # Action!
 </code></pre>

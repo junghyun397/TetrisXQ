@@ -16,7 +16,7 @@ python Display.py -e auto -g y  # Watch AI play
 ## Training with DQN
 Start training with a simple Deep-Q-Network.
 <pre><code>
-python Train.py -e auto -g y -c 2000  # Learn 2000 games with auto play.
+python ./agent/dqn/Train.py -e auto -g y -c 2000  # Learn 2000 games with auto play.
 </code></pre>
 
 ## It's your turn now!

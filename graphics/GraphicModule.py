@@ -100,7 +100,7 @@ class GraphicModule(GraphicInterface):
                         = self.tetris_model.current_shape_code + 2
 
     def _draw_ghost_tetromino(self):
-        temp_y = 0
+        temp_y = self._tetromino_y
         while self.tetris_model.can_move_block(temp_y + 1, self._tetromino_x):
             temp_y += 1
         for col in range(len(self.tetris_model.current_tetromino)):

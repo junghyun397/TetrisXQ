@@ -6,6 +6,9 @@
 TetrisXQ - Reverse tetris Reinforcement Learning Environment and implementations(DQN).  
 Here's the Tetris that will probably annoy you the *most?*
 
+![nomalai](https://media.giphy.com/media/KfI3ewRjqcTP3kZShc/giphy.gif)
+![trained](https://media.giphy.com/media/cjVpgnWTCIopyJe5H1/giphy.gif)
+
 ## Look around first
 Feel a little bit about what's happening through Display.py
 <pre><code>

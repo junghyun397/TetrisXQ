@@ -1,6 +1,3 @@
-from tetris.Tetromino import Tetromino
-
-
 class TetrisModel:
 
     def __init__(self, settings):
@@ -8,6 +5,7 @@ class TetrisModel:
         self._board_width = settings.GRID_WIDTH
 
         self.board = None
+        self.tetromino = settings.TETROMINO
 
         self.current_tetromino = None
         self.current_shape_code = 0
@@ -40,7 +38,7 @@ class TetrisModel:
 
         self.turns += 1
 
-        self.current_tetromino = Tetromino.get_tetromino(shape_code, 0)
+        self.current_tetromino = self.tetromino.get_tetromino(shape_code, 0)
         self.current_shape_code = shape_code
         self.current_rotate = 0
         self.current_score = 0
@@ -58,18 +56,18 @@ class TetrisModel:
 
     def rotate_block(self, y, x):
         temp_rotate = self.current_rotate + 1
-        if temp_rotate > Tetromino.get_rotate_count(self.current_shape_code):
+        if temp_rotate > self.tetromino.get_rotate_count(self.current_shape_code):
             temp_rotate = 0
 
-        if self._can_update(y, x, Tetromino.get_tetromino(self.current_shape_code, temp_rotate)):
-            self.current_tetromino = Tetromino.get_tetromino(self.current_shape_code, temp_rotate)
+        if self._can_update(y, x, self.tetromino.get_tetromino(self.current_shape_code, temp_rotate)):
+            self.current_tetromino = self.tetromino.get_tetromino(self.current_shape_code, temp_rotate)
             self.current_rotate = temp_rotate
             return True
         return False
 
     def rotate_block_rate(self, y, x, rate):
-        if self._can_update(y, x, Tetromino.get_tetromino(self.current_shape_code, rate)):
-            self.current_tetromino = Tetromino.get_tetromino(self.current_shape_code, rate)
+        if self._can_update(y, x, self.tetromino.get_tetromino(self.current_shape_code, rate)):
+            self.current_tetromino = self.tetromino.get_tetromino(self.current_shape_code, rate)
             self.current_rotate = rate
             return True
         return False
@@ -149,14 +147,12 @@ class TetrisModel:
             deep_hole_count = 0
             has_roof = False
             for y in range(self._board_height):
-                if has_roof:
-                    if get_board(y, x) == 0:
-                        roof += 1
+                if has_roof and get_board(y, x) == 0:
+                    roof += 1
                 elif get_board(y, x) == 1:
                     has_roof = True
-                elif deep_hole_count == 0:
-                    if get_board(y, x) == 0 and get_board(y, x - 1) == 1 and get_board(y, x + 1) == 1:
-                        deep_hole_count += 1
+                elif deep_hole_count == 0 and get_board(y, x) == 0 and get_board(y, x - 1) == 1 and get_board(y, x + 1) == 1:
+                    deep_hole_count += 1
                 elif deep_hole_count > 0:
                     if get_board(y, x) == 0:
                         deep_hole_count += 1
